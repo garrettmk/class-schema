@@ -1,1 +1,1 @@
-export * from './lib/metada-manager';
+export * from './lib';

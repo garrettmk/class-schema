@@ -27,6 +27,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "radash": "^8.1.0",
     "tslib": "^2.3.0"
   }
 }

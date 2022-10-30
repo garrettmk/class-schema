@@ -8,6 +8,8 @@
     "skipLibCheck": true,
     "paths": {
       "metada-manager": ["packages/metada-manager/src/index.ts"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }
