@@ -1,4 +1,4 @@
-import { MetadataManagerClass, Constructor, PropertyMetadataDecoratorFn } from "../lib";
+import { MetadataManagerClass, PropertyMetadataDecoratorFn } from "../lib";
 
 
 type TestMetaField = {
