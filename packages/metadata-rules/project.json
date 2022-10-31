@@ -4,6 +4,16 @@
   "sourceRoot": "packages/metadata-rules/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/metadata-rules",
+        "main": "packages/metadata-rules/src/index.ts",
+        "tsConfig": "packages/metadata-rules/tsconfig.lib.json",
+        "assets": ["packages/metadata-rules/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
