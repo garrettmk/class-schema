@@ -11,7 +11,7 @@ export type PropertyMetaRule<F, S extends F = F, C = unknown> = {
     else?: MaybeArray<PropertyMetaRuleAction<F, F, C> | PropertyMetaRule<F, F, C>>
 }
 
-export type PropertiesMeta<F> = Record<string | symbol, F>;
+export type PropertiesMeta<F = unknown> = Record<string | symbol, F>;
 
 
 
