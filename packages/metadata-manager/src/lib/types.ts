@@ -1,15 +1,14 @@
 /**
  * A class constructor.
  */
-export type Constructor<T = unknown> = new () => T;
+export type Constructor<T = any>= new () => T;
 
-export type AnyFunction = (...args: unknown[]) => unknown;
+export type AnyFunction = () => any;
 
-export type ClassDecorator<T extends Function> = (target: T) => T | void;
+export type ClassDecorator<T> = (target: T) => T | void;
 
-export type PropertyDecorator<T extends Function> = (
-  target: T,
-  key: string | symbol
-) => void;
+export type PropertyKey = string | symbol;
 
-export type PropertiesMetadata<M> = Record<string | symbol, M>;
+export type PropertyDecorator<T = object> = (target: T, key: PropertyKey) => void;
+
+export type PropertiesMetadata<FieldMetadata = unknown> = Record<string | symbol, FieldMetadata>;
