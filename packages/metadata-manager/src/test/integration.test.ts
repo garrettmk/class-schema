@@ -1,5 +1,5 @@
 import { MetadataManagerClass } from '../lib/metadata-manager';
-import { PropertyMetadataDecoratorFn } from '../lib/property-metdata-decorator';
+import { PropertyMetadataDecoratorFn } from '../lib/metadata-decorators';
 
 type TestMetaField = {
   nullable?: boolean;

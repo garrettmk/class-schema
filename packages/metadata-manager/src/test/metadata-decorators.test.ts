@@ -1,6 +1,7 @@
+import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from 'src/lib/metadata-decorators';
 import { MetadataManagerClass } from "src/lib/metadata-manager";
-import { PropertyMetadataDecoratorFn } from "src/lib/property-metdata-decorator";
-import { MetadataDict } from "src/lib/types";
+import { Constructor, MetadataDict } from "src/lib/types";
+
 
 describe('PropertyMetadataDecorator', () => {
     const TestMetadataManager = MetadataManagerClass();
@@ -22,4 +23,21 @@ describe('PropertyMetadataDecorator', () => {
 
         expect(TestMetadataManager.getMetadata(TestTarget.prototype)).toMatchObject(expected);
     });
-})
+});
+
+
+describe('ClassMetadataDecorator', () => {
+    const TestMetadataManager = MetadataManagerClass<MetadataDict<unknown>, Constructor>();
+    const Meta = ClassMetadataDecoratorFn(TestMetadataManager);
+    
+    @Meta({ hello: 'there' })
+    class TestTarget {}
+
+    it('should save the expected metadata', () => {
+        const expected: MetadataDict = {
+            hello: 'there'
+        };
+
+        expect(TestMetadataManager.getMetadata(TestTarget)).toMatchObject(expected);
+    });
+});
