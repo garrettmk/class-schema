@@ -1,4 +1,5 @@
-import { MetadataManagerClass, PropertyMetadataDecoratorFn } from '../lib';
+import { MetadataManagerClass } from '../lib/metadata-manager';
+import { PropertyMetadataDecoratorFn } from '../lib/property-metdata-decorator';
 
 type TestMetaField = {
   nullable?: boolean;
@@ -22,9 +23,9 @@ describe('Integration', () => {
   }
 
   it('should have metadata', () => {
-    console.log(Manager.getOwnMeta(TestClass.prototype));
-    console.log(OtherManager.getOwnMeta(TestClass.prototype));
+    console.log(Manager.getMetadata(TestClass.prototype));
+    console.log(OtherManager.getMetadata(TestClass.prototype));
     // const meta = Manager.getOwnMeta(TestClass);
-    expect(Manager.hasOwnMeta(TestClass.prototype)).toBeTruthy();
+    expect(Manager.hasMetadata(TestClass.prototype)).toBeTruthy();
   });
 });

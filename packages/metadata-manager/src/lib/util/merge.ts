@@ -9,5 +9,5 @@ export function merge<A extends object, B extends object>(
   a: A | undefined,
   b: B | undefined
 ): (A & B) | undefined {
-  return a || b ? ({ ...a, ...b } as A & B) : a || b;
+  return a ?? b ? ({ ...a, ...b } as A & B) : a ?? b;
 }
