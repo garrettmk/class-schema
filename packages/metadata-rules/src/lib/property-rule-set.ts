@@ -1,28 +1,29 @@
-import { MaybeArray } from "./types";
-import { ensureArray } from "./util";
+import { MaybeArray } from "./util/types";
+import { ensureArray } from "./util/ensure-array";
+import { PropertyKey } from "metadata-manager";
 
-export type PropertyMetaRuleSelector<F, S extends F = F, C = unknown> = (meta: F, propertyKey: string | symbol, context: C) => unknown;
+export type PropertyMetaRuleSelector<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = (meta: BaseMeta, propertyKey: PropertyKey, context: Context) => unknown;
 
-export type PropertyMetaRuleAction<F, S extends F = F, C = unknown> = (meta: S, propertyKey: string | symbol, context: C) => F | void;
+export type PropertyMetaRuleAction<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = (meta: SpecificMeta, propertyKey: PropertyKey, context: Context) => BaseMeta | void;
 
-export type PropertyMetaRule<F, S extends F = F, C = unknown> = {
-    if: PropertyMetaRuleSelector<F, S, C>
-    then: MaybeArray<PropertyMetaRuleAction<F, S, C> | PropertyMetaRule<F, S, C>>
-    else?: MaybeArray<PropertyMetaRuleAction<F, F, C> | PropertyMetaRule<F, F, C>>
+export type PropertyMetaRule<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = {
+    if: PropertyMetaRuleSelector<BaseMeta, SpecificMeta, Context>
+    then: MaybeArray<PropertyMetaRuleAction<BaseMeta, SpecificMeta, Context> | PropertyMetaRule<BaseMeta, SpecificMeta, Context>>
+    else?: MaybeArray<PropertyMetaRuleAction<BaseMeta, BaseMeta, Context> | PropertyMetaRule<BaseMeta, BaseMeta, Context>>
 }
 
-export type PropertiesMeta<F = unknown> = Record<string | symbol, F>;
+export type PropertiesMeta<BaseMeta = unknown> = Record<PropertyKey, BaseMeta>;
 
 
 
-export class MetaPropertyRuleSet<F, S extends F = F, C = unknown> {
-    protected readonly rules: PropertyMetaRule<F, S, C>[];
+export class MetaPropertyRuleSet<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> {
+    protected readonly rules: PropertyMetaRule<BaseMeta, SpecificMeta, Context>[];
 
-    constructor(...fromRules: (PropertyMetaRule<F, S, C> | MetaPropertyRuleSet<F, S, C>)[]) {
+    constructor(...fromRules: (PropertyMetaRule<BaseMeta, SpecificMeta, Context> | MetaPropertyRuleSet<BaseMeta, SpecificMeta, Context>)[]) {
         this.rules = fromRules.flatMap(from => from instanceof MetaPropertyRuleSet ? from.rules : from);
     }
 
-    public apply(meta: PropertiesMeta<F>, context: C): PropertiesMeta<F> {
+    public apply(meta: PropertiesMeta<BaseMeta>, context: Context): PropertiesMeta<BaseMeta> {
         return Object.entries(meta).reduce(
             (result, [propertyKey, field]) => {
                 result[propertyKey] = this.applyToField(this.rules, field, propertyKey, context);
@@ -32,15 +33,14 @@ export class MetaPropertyRuleSet<F, S extends F = F, C = unknown> {
         ) ?? meta;
     }
 
-    protected applyToField(rules: MaybeArray<PropertyMetaRule<F, S, C>>, field: F, propertyKey: string | symbol, context: C): F {
+    protected applyToField(rules: MaybeArray<PropertyMetaRule<BaseMeta, SpecificMeta, Context>>, field: BaseMeta, propertyKey: PropertyKey, context: Context): BaseMeta {
         return ensureArray(rules).reduce(
             (result, rule) => {
                 const shouldActivate = rule.if(result, propertyKey, context);
+                const actionsOrRules = shouldActivate ? rule.then : rule.else;
 
-                if (shouldActivate)
-                    return this.applyActionsOrRules(rule.then, result, propertyKey, context);
-                else if (rule.else)
-                    return this.applyActionsOrRules(rule.else, result, propertyKey, context);
+                if (actionsOrRules)
+                    return this.applyActionsOrRules(actionsOrRules, result, propertyKey, context);
                 else
                     return result;
             },
@@ -48,11 +48,11 @@ export class MetaPropertyRuleSet<F, S extends F = F, C = unknown> {
         ) ?? field;
     }
 
-    protected applyActionsOrRules(actionsOrRules: MaybeArray<PropertyMetaRuleAction<F, S, C> | PropertyMetaRule<F, S, C>>, field: F, key: string | symbol, context: C): F {
+    protected applyActionsOrRules(actionsOrRules: MaybeArray<PropertyMetaRuleAction<BaseMeta, SpecificMeta, Context> | PropertyMetaRule<BaseMeta, SpecificMeta, Context>>, field: BaseMeta, key: PropertyKey, context: Context): BaseMeta {
         return ensureArray(actionsOrRules).reduce(
             (result, actionOrRule) => {
                 if (typeof actionOrRule === 'function')
-                    return actionOrRule(result as S, key, context) ?? result;
+                    return actionOrRule(result as SpecificMeta, key, context) ?? result;
                 else
                     return this.applyToField(actionOrRule, result, key, context);
             },
