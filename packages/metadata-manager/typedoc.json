@@ -1,0 +1,5 @@
+{
+    "entryPoints": ["./src/index.ts"],
+    "out": "../../dist/docs/metadata-manager",
+    "tsconfig": "./tsconfig.lib.json"
+}
