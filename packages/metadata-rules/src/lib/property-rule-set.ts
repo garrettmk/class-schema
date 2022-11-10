@@ -1,39 +1,27 @@
-import { MaybeArray } from "./util/types";
+import { MetadataDict, PropertyKey } from "metadata-manager";
+import { PropertyAction, PropertyRule } from "./property-rule-types";
 import { ensureArray } from "./util/ensure-array";
-import { PropertyKey } from "metadata-manager";
-
-export type PropertyMetaRuleSelector<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = (meta: BaseMeta, propertyKey: PropertyKey, context: Context) => unknown;
-
-export type PropertyMetaRuleAction<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = (meta: SpecificMeta, propertyKey: PropertyKey, context: Context) => BaseMeta | void;
-
-export type PropertyMetaRule<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> = {
-    if: PropertyMetaRuleSelector<BaseMeta, SpecificMeta, Context>
-    then: MaybeArray<PropertyMetaRuleAction<BaseMeta, SpecificMeta, Context> | PropertyMetaRule<BaseMeta, SpecificMeta, Context>>
-    else?: MaybeArray<PropertyMetaRuleAction<BaseMeta, BaseMeta, Context> | PropertyMetaRule<BaseMeta, BaseMeta, Context>>
-}
-
-export type PropertiesMeta<BaseMeta = unknown> = Record<PropertyKey, BaseMeta>;
+import { MaybeArray } from "./util/types";
 
 
+export class PropertyRuleSet<PropertyMetadata, Context = unknown> {
+    protected readonly rules: PropertyRule<PropertyMetadata, Context>[];
 
-export class MetaPropertyRuleSet<BaseMeta, SpecificMeta extends BaseMeta = BaseMeta, Context = unknown> {
-    protected readonly rules: PropertyMetaRule<BaseMeta, SpecificMeta, Context>[];
-
-    constructor(...fromRules: (PropertyMetaRule<BaseMeta, SpecificMeta, Context> | MetaPropertyRuleSet<BaseMeta, SpecificMeta, Context>)[]) {
-        this.rules = fromRules.flatMap(from => from instanceof MetaPropertyRuleSet ? from.rules : from);
+    constructor(...fromRules: (PropertyRule<PropertyMetadata, Context>[] | PropertyRuleSet<PropertyMetadata, Context>)[]) {
+        this.rules = fromRules.flatMap(from => from instanceof PropertyRuleSet ? from.rules : from);
     }
 
-    public apply(meta: PropertiesMeta<BaseMeta>, context: Context): PropertiesMeta<BaseMeta> {
-        return Object.entries(meta).reduce(
+    public apply(metadata: MetadataDict<PropertyMetadata>, context: Context): MetadataDict<PropertyMetadata> {
+        return Object.entries(metadata).reduce(
             (result, [propertyKey, field]) => {
                 result[propertyKey] = this.applyToField(this.rules, field, propertyKey, context);
                 return result;
             },
-            meta
-        ) ?? meta;
+            metadata
+        ) ?? metadata;
     }
 
-    protected applyToField(rules: MaybeArray<PropertyMetaRule<BaseMeta, SpecificMeta, Context>>, field: BaseMeta, propertyKey: PropertyKey, context: Context): BaseMeta {
+    protected applyToField(rules: MaybeArray<PropertyRule<PropertyMetadata, Context>>, propertyMeta: PropertyMetadata, propertyKey: PropertyKey, context: Context): PropertyMetadata {
         return ensureArray(rules).reduce(
             (result, rule) => {
                 const shouldActivate = rule.if(result, propertyKey, context);
@@ -41,22 +29,22 @@ export class MetaPropertyRuleSet<BaseMeta, SpecificMeta extends BaseMeta = BaseM
 
                 if (actionsOrRules)
                     return this.applyActionsOrRules(actionsOrRules, result, propertyKey, context);
-                else
-                    return result;
+
+                return result;
             },
-            field
-        ) ?? field;
+            propertyMeta
+        ) ?? propertyMeta;
     }
 
-    protected applyActionsOrRules(actionsOrRules: MaybeArray<PropertyMetaRuleAction<BaseMeta, SpecificMeta, Context> | PropertyMetaRule<BaseMeta, SpecificMeta, Context>>, field: BaseMeta, key: PropertyKey, context: Context): BaseMeta {
+    protected applyActionsOrRules(actionsOrRules: MaybeArray<PropertyAction<PropertyMetadata, Context> | PropertyRule<PropertyMetadata, Context>>, propertyMeta: PropertyMetadata, propertyKey: PropertyKey, context: Context): PropertyMetadata {
         return ensureArray(actionsOrRules).reduce(
             (result, actionOrRule) => {
                 if (typeof actionOrRule === 'function')
-                    return actionOrRule(result as SpecificMeta, key, context) ?? result;
+                    return actionOrRule(result, propertyKey, context) ?? result;
                 else
-                    return this.applyToField(actionOrRule, result, key, context);
+                    return this.applyToField(actionOrRule, result, propertyKey, context);
             },
-            field
-        ) ?? field;
+            propertyMeta
+        ) ?? propertyMeta;
     }
 }

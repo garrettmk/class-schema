@@ -1,5 +1,4 @@
-import { PropertiesMeta, PropertyMetaRuleSelector } from "./property-rule-set";
-
+import { PropertySelector } from "./property-rule-types";
 
 /**
  * 
@@ -7,10 +6,10 @@ import { PropertiesMeta, PropertyMetaRuleSelector } from "./property-rule-set";
  * @returns A `RuleSelector` that matches fields matching
  *          the given partial schema.
  */
- export function matches<M extends PropertiesMeta, S extends M = M, C = unknown>(match: Partial<S>): PropertyMetaRuleSelector<M, S, C> {
-    return function (field): field is S {
+ export function matches<Metadata extends object, Context = unknown>(match: Partial<Metadata>): PropertySelector<Metadata, Context> {
+    return function (field): boolean {
         return Object.entries(match).every(
-            ([key, value]) => field[key as keyof M] === value
+            ([key, value]) => field[key as keyof Metadata] === value
         );
     }
 }
@@ -21,8 +20,9 @@ import { PropertiesMeta, PropertyMetaRuleSelector } from "./property-rule-set";
  * @param keys The field keys to match
  * @returns A `RuleSelector` that matches fields whose schema key is one of `keys`.
  */
-export function matchesSchemaKey<M extends PropertiesMeta, S extends M = M, C = unknown>(...keys: PropertyKey[]): PropertyMetaRuleSelector<M, S, C> {
-    return function (field, key): field is S {
+export function matchesPropertyKey<Metadata, Context = unknown>(...keys: PropertyKey[]): PropertySelector<Metadata, Context> {
+    return function (field, key): boolean {
         return keys.includes(key);
     }
 }
+

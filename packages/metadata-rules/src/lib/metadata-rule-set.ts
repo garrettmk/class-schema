@@ -1,61 +1,23 @@
 import { MaybeArray } from "./util/types";
 import { ensureArray } from "./util/ensure-array";
+import { MetadataRule, MetadataAction } from "./metadata-rule-types";
 
-
-/**
- * A function that returns `true` if a rule should be used.
- */
- export type RuleSelector<M, S extends M = M, C = unknown> = (meta: M, context: C) => unknown;
-
- /**
-  * A function that is activated for a selected field.
-  */
- export type RuleAction<M, S extends M = M, C = unknown> = (meta: S, context: C) => M | void;
-
- /**
-  * A `RuleSelector` paired one or more `RuleAction`s. If the selector in the `if` key
-  * returns `true` for a metadata, the actions under the `then` key will be run. Conversely, 
-  * if the selector returns false, the actions under the `else` key will be run.
-  * 
-  * `then` and `else` can also contain nested rules.
-  * 
-  * @example ```
-  * const rulesForStrings: MetaRule = {
-  *     if: isStringMeta(),
-  *     then: [
-  *         {
-  *             if: isEmptyString(),
-  *             then: doSomething(),
-  *             else: doSomethingElse(),
-  *         },
-  *         {
-  *             ...
-  *         }
-  *     ]
-  * }
-  */
- export type MetaRule<M, S extends M = M, C = unknown> = {
-   if: RuleSelector<M, S, C>,
-   then: MaybeArray<RuleAction<M, S, C> | MetaRule<M, S, C>>
-   else?: MaybeArray<RuleAction<M, M, C> | MetaRule<M, M, C>>
- }
- 
 
  /**
   * Applies a set of rules to a given metadata value.
   */
-export class MetaRuleSet<M, S extends M = M, C = unknown> {
+export class MetadataRuleSet<Metadata, Context = unknown> {
     /**
      * @internal 
      */
-    protected readonly rules: MetaRule<M, S, C>[];
+    protected readonly rules: MetadataRule<Metadata, Context>[];
 
     /**
-     * Create a `MetaRuleSet`
-     * @param fromRules An array of `MetaRule`s or `MetaRuleSet`s to use
+     * Create a `MetadataRuleSet`
+     * @param fromRules An array of `MetadataRule`s or `MetadataRuleSet`s to use
      */
-    constructor(...fromRules: (MetaRule<M, S, C> | MetaRuleSet<M, S, C>)[]) {
-        this.rules = fromRules.flatMap(from => from instanceof MetaRuleSet ? from.rules : from);
+    constructor(...fromRules: (MetadataRule<Metadata, Context> | MetadataRuleSet<Metadata, Context>)[]) {
+        this.rules = fromRules.flatMap(from => from instanceof MetadataRuleSet ? from.rules : from);
     }
 
     /**
@@ -70,7 +32,7 @@ export class MetaRuleSet<M, S extends M = M, C = unknown> {
      * @param context A context value to pass to selectors and actions
      * @returns `meta`, or a new metadata value
      */
-    public apply(meta: M, context: C): M {
+    public apply(meta: Metadata, context: Context): Metadata {
         return this.applyRules(this.rules, meta, context);
     }
 
@@ -83,7 +45,7 @@ export class MetaRuleSet<M, S extends M = M, C = unknown> {
      * @param context Extra data passed along to each rule.
      * @returns A new metadata value, or `meta`.
      */
-    protected applyRules(rules: MaybeArray<MetaRule<M, S, C>>, meta: M, context: C): M {
+    protected applyRules(rules: MaybeArray<MetadataRule<Metadata, Context>>, meta: Metadata, context: Context): Metadata {
         return ensureArray(rules).reduce(
             (result, rule) => {
                 const shouldActivate = rule.if(result, context);
@@ -108,11 +70,11 @@ export class MetaRuleSet<M, S extends M = M, C = unknown> {
      * @param context Extra data passed to the actions or rules
      * @returns A new metadata value, or `meta`
      */
-    protected applyActionsOrRules(actionsOrRules: MaybeArray<RuleAction<M, S, C> | MetaRule<M, S, C>>, meta: M, context: C): M {
+    protected applyActionsOrRules(actionsOrRules: MaybeArray<MetadataAction<Metadata, Context> | MetadataRule<Metadata, Context>>, meta: Metadata, context: Context): Metadata {
         return ensureArray(actionsOrRules).reduce(
             (result, actionOrRule) => {
                 if (typeof actionOrRule === 'function')
-                    return actionOrRule(result as S, context) ?? result;
+                    return actionOrRule(result, context) ?? result;
                 else
                     return this.applyRules(actionOrRule, result, context);
             },

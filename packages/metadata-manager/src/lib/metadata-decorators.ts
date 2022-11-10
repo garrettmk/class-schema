@@ -1,10 +1,10 @@
 import { MetadataDict, PropertyDecorator, MetadataManager, ClassDecorator } from "./types";
 
 
-export type PropertyMetadataDecorator<FieldMetadata, Target> = (meta: FieldMetadata) => PropertyDecorator<Target>;
+export type PropertyMetadataDecorator<PropertyMetadata, Target> = (meta: PropertyMetadata) => PropertyDecorator<Target>;
 
-export function PropertyMetadataDecoratorFn<FieldMetadata, Target>(manager: MetadataManager<MetadataDict<FieldMetadata>, Target>): PropertyMetadataDecorator<FieldMetadata, Target> {
-  return function (meta: FieldMetadata) {
+export function PropertyMetadataDecoratorFn<PropertyMetadata, Target>(manager: MetadataManager<MetadataDict<PropertyMetadata>, Target>): PropertyMetadataDecorator<PropertyMetadata, Target> {
+  return function (meta: PropertyMetadata) {
     return function (target, key) {
       manager.mergeMetadata(target as Target, {
         [key]: meta

@@ -1,13 +1,13 @@
-import { PropertyMetaRuleSelector } from "./property-rule-set";
-import { RuleSelector } from "./rule-set";
+import { PropertySelector } from "./property-rule-types";
+import { MetadataSelector } from './metadata-rule-types';
 
 
 /**
  * 
- * @returns A `RuleSelector` that always activates.
+ * @returns A `MetadataSelector` that always activates.
  */
-export function always<M, S extends M = M, C = unknown>(): RuleSelector<M, S, C> {
-    return function (field): field is S {
+export function always<Metadata, Context = unknown>(): MetadataSelector<Metadata, Context> {
+    return function (field) {
         return true;
     }
 }
@@ -15,10 +15,10 @@ export function always<M, S extends M = M, C = unknown>(): RuleSelector<M, S, C>
 
 /**
  * 
- * @returns A `RuleSelector` that never activates.
+ * @returns A `MetadataSelector` that never activates.
  */
-export function never<M, S extends M = M, C = unknown>(): RuleSelector<M, S, C> {
-    return function (field): field is S {
+export function never<Metadata, Context = unknown>(): MetadataSelector<Metadata, Context> {
+    return function (field) {
         return false;
     }
 }
@@ -27,17 +27,17 @@ export function never<M, S extends M = M, C = unknown>(): RuleSelector<M, S, C> 
 /**
  * 
  * @param conditions A list of `RuleSelectors` to match with.
- * @returns A `RuleSelector` that matches fields that match all
+ * @returns A `MetadataSelector` that matches fields that match all
  *          the given rules.
  */
-export function and<M, S extends M = M, C = unknown>(...conditions: RuleSelector<M, S, C>[]): RuleSelector<M, S, C>;
-export function and<M, S extends M = M, C = unknown>(...conditions: PropertyMetaRuleSelector<M, S, C>[]): PropertyMetaRuleSelector<M, S, C>;
-export function and<M, S extends M = M, C = unknown>(...conditions: (RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C>)[]): RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C> {
-    return function (...args: Parameters<RuleSelector<M, S, C>> | Parameters<PropertyMetaRuleSelector<M, S, C>>): boolean {
+export function and<Metadata, Context = unknown>(...conditions: MetadataSelector<Metadata, Context>[]): MetadataSelector<Metadata, Context>;
+export function and<Metadata, Context = unknown>(...conditions: PropertySelector<Metadata, Context>[]): PropertySelector<Metadata, Context>;
+export function and<Metadata, Context = unknown>(...conditions: (MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context>)[]): MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context> {
+    return function (...args: Parameters<MetadataSelector<Metadata, Context>> | Parameters<PropertySelector<Metadata, Context>>): boolean {
         if (args.length === 2)
-            return conditions.every(condition => (condition as RuleSelector<M, S, C>)(...args));
+            return conditions.every(condition => (condition as MetadataSelector<Metadata, Context>)(...args));
         else
-            return conditions.every(condition => (condition as PropertyMetaRuleSelector<M, S, C>)(...args));
+            return conditions.every(condition => (condition as PropertySelector<Metadata, Context>)(...args));
     }
 }
 
@@ -45,17 +45,17 @@ export function and<M, S extends M = M, C = unknown>(...conditions: (RuleSelecto
 /**
  *  
  * @param conditions A list of `RuleSelectors` to match with.
- * @returns A `RuleSelector` that matches fields that match any
+ * @returns A `MetadataSelector` that matches fields that match any
  *          of the given rules.
  */
-export function or<M, S extends M = M, C = unknown>(...conditions: RuleSelector<M, S, C>[]): RuleSelector<M, S, C>;
-export function or<M, S extends M = M, C = unknown>(...conditions: PropertyMetaRuleSelector<M, S, C>[]): PropertyMetaRuleSelector<M, S, C>;
-export function or<M, S extends M = M, C = unknown>(...conditions: (RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C>)[]): RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C> {
-    return function (...args: Parameters<RuleSelector<M, S, C>> | Parameters<PropertyMetaRuleSelector<M, S, C>>): boolean {
+export function or<Metadata, Context = unknown>(...conditions: MetadataSelector<Metadata, Context>[]): MetadataSelector<Metadata, Context>;
+export function or<Metadata, Context = unknown>(...conditions: PropertySelector<Metadata, Context>[]): PropertySelector<Metadata, Context>;
+export function or<Metadata, Context = unknown>(...conditions: (MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context>)[]): MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context> {
+    return function (...args: Parameters<MetadataSelector<Metadata, Context>> | Parameters<PropertySelector<Metadata, Context>>): boolean {
         if (args.length === 2)
-            return conditions.some(condition => (condition as RuleSelector<M, S, C>)(...args));
+            return conditions.some(condition => (condition as MetadataSelector<Metadata, Context>)(...args));
         else
-            return conditions.some(condition => (condition as PropertyMetaRuleSelector<M, S, C>)(...args));
+            return conditions.some(condition => (condition as PropertySelector<Metadata, Context>)(...args));
     }
 }
 
@@ -63,16 +63,16 @@ export function or<M, S extends M = M, C = unknown>(...conditions: (RuleSelector
 /**
  *  
  * @param condition The condition to match with
- * @returns A `RuleSelector` that matches fields that do NOT
+ * @returns A `MetadataSelector` that matches fields that do NOT
  *          match the given condition.
  */
-export function not<M, S extends M = M, C = unknown>(condition: RuleSelector<M, S, C>): RuleSelector<M, S, C>;
-export function not<M, S extends M = M, C = unknown>(condition: PropertyMetaRuleSelector<M, S, C>): PropertyMetaRuleSelector<M, S, C>;
-export function not<M, S extends M = M, C = unknown>(condition: RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C>): RuleSelector<M, S, C> | PropertyMetaRuleSelector<M, S, C> {
-    return function (...args: Parameters<RuleSelector<M, S, C>> | Parameters<PropertyMetaRuleSelector<M, S, C>>): boolean {
+export function not<Metadata, Context = unknown>(condition: MetadataSelector<Metadata, Context>): MetadataSelector<Metadata, Context>;
+export function not<Metadata, Context = unknown>(condition: PropertySelector<Metadata, Context>): PropertySelector<Metadata, Context>;
+export function not<Metadata, Context = unknown>(condition: MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context>): MetadataSelector<Metadata, Context> | PropertySelector<Metadata, Context> {
+    return function (...args: Parameters<MetadataSelector<Metadata, Context>> | Parameters<PropertySelector<Metadata, Context>>): boolean {
         if (args.length === 2)
-            return !(condition as RuleSelector<M, S, C>)(...args);
+            return !(condition as MetadataSelector<Metadata, Context>)(...args);
         else
-            return !(condition as PropertyMetaRuleSelector<M, S, C>)(...args);
+            return !(condition as PropertySelector<Metadata, Context>)(...args);
     }
 }
