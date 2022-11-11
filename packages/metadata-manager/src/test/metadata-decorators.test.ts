@@ -1,6 +1,7 @@
-import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from 'src/lib/metadata-decorators';
-import { MetadataManagerClass } from "src/lib/metadata-manager";
-import { Constructor, MetadataDict } from "src/lib/types";
+import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from '../lib/metadata-decorators';
+import { MetadataManagerClass } from "../lib/metadata-manager";
+import { MetadataDict } from "../lib/types";
+import { Constructor } from "@/util";
 
 
 describe('PropertyMetadataDecorator', () => {

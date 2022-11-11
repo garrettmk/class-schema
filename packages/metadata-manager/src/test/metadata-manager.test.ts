@@ -1,5 +1,5 @@
-import { MetadataManagerClass } from "src/lib/metadata-manager";
-import { MetadataDict, MetadataManager } from "src/lib/types";
+import { MetadataManagerClass } from "../lib/metadata-manager";
+import { MetadataDict, MetadataManager } from "../lib/types";
 
 describe('MetadataManagerClass', () => {
   let TestMetadataManager: MetadataManager;

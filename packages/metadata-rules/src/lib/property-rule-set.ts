@@ -1,8 +1,6 @@
-import { MetadataDict, PropertyKey } from "metadata-manager";
+import { MetadataDict, PropertyKey } from "@/metadata-manager";
 import { PropertyAction, PropertyRule } from "./property-rule-types";
-import { ensureArray } from "./util/ensure-array";
-import { MaybeArray } from "./util/types";
-
+import { MaybeArray, ensureArray } from '@/util';
 
 export class PropertyRuleSet<PropertyMetadata, Context = unknown> {
     protected readonly rules: PropertyRule<PropertyMetadata, Context>[];

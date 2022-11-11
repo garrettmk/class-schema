@@ -1,17 +1,8 @@
-/**
- * A constructor function.
- */
-export type Constructor<T = any>= new () => T;
-
-/**
- * Represents any function. Preferred over using `Function` as a type.
- */
-export type AnyFunction = () => any;
 
 /**
  * A class decorator function.
  */
-export type ClassDecorator<T> = (target: T) => T | void;
+export type ClassDecorator<T = unknown> = (target: T) => T | void;
 
 /**
  * A property key.

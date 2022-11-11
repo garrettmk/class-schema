@@ -1,4 +1,4 @@
-import { merge } from '../../lib/util/merge';
+import { merge } from '../lib/merge';
 
 describe('merge', () => {
   const a = {

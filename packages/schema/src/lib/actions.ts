@@ -1,6 +1,6 @@
 import { applyPropertyDecorators } from '../lib/util/apply-property-decorators';
 import { merge, PropertyKey, Constructor } from 'metadata-manager';
-import { FieldMetadata } from './class-schema-types';
+import { FieldMetadata } from './class-metadata-types';
 import { RuleAction, ensureArray } from 'metadata-rules';
 
 

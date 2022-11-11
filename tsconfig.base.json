@@ -7,10 +7,10 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "metadata-manager": ["./packages/metadata-manager/src/index.ts"],
-      "metadata-rules": ["./packages/metadata-rules/src/index.ts"],
-      "schema": ["./packages/schema/src/index.ts"],
-      "util": ["packages/util/src/index.ts"]
+      "@/metadata-manager": ["./packages/metadata-manager/src/index.ts"],
+      "@/metadata-rules": ["./packages/metadata-rules/src/index.ts"],
+      "@/schema": ["./packages/schema/src/index.ts"],
+      "@/util": ["./packages/util/src/index.ts"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

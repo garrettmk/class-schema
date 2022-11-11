@@ -1,4 +1,4 @@
-import { ClassMeta, ClassMetadataManager, FieldMeta } from '../lib/class-schema-types';
+import { ClassMeta, ClassMetadataManager, FieldMeta } from '../lib/class-metadata-types';
 
 
 @ClassMeta({ description: 'A test class' })

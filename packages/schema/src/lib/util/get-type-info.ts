@@ -1,4 +1,4 @@
-import { TypeFn } from "../class-schema-types";
+import { TypeFn } from "../class-metadata-types";
 import { getInnerType } from "./inner-type";
 
 export function getTypeInfo(typeFn: TypeFn) {

@@ -1,4 +1,4 @@
-import { getPrototypeChain } from '../../lib/util/get-prototype-chain';
+import { getPrototypeChain } from '../lib/get-prototype-chain';
 
 describe('getPrototypeChain', () => {
   class Grandparent {}
