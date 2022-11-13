@@ -12,12 +12,14 @@ export type GenericFieldMetadata<T = unknown> = {
 }
 
 export type BooleanFieldMetadata = GenericFieldMetadata<boolean> & {
-    eq?: boolean   
+    eq?: boolean
+    ne?: boolean
 }
 
 export type StringFieldMetadata = GenericFieldMetadata & {
     minLength?: number
     maxLength?: number
+    in?: string[]
     regex?: RegExp
 }
 
@@ -27,9 +29,9 @@ export type NumberFieldMetadata = GenericFieldMetadata & {
 }
 
 export type PropertyMetadata<T = unknown> = 
-    T extends boolean ? BooleanFieldMetadata :
-    T extends string ? StringFieldMetadata :
-    T extends number ? NumberFieldMetadata :
+    T extends BooleanConstructor ? BooleanFieldMetadata :
+    T extends StringConstructor ? StringFieldMetadata :
+    T extends NumberConstructor ? NumberFieldMetadata :
     GenericFieldMetadata;
 
 
