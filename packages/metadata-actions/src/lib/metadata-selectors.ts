@@ -1,4 +1,4 @@
-import { MaybeArray } from 'util';
+import { MaybeArray } from 'common';
 import { MetadataAction, applyActions } from './metadata-actions';
 
 export type MetadataSelector<Metadata, Context = unknown> = (

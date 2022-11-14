@@ -1,14 +1,12 @@
 import { PropertyKey } from 'metadata-manager';
-import { MaybeArray } from 'util';
+import { MaybeArray } from 'common';
 import { PropertyAction, applyPropertyActions } from './property-actions';
-
 
 export type PropertySelector<Metadata, Context = unknown> = (
   metadata: Metadata,
   propertyKey: PropertyKey,
   context: Context
 ) => unknown;
-
 
 export function ifProperty<Metadata, Context = unknown>(
   selector: PropertySelector<Metadata, Context>,
@@ -24,7 +22,6 @@ export function ifProperty<Metadata, Context = unknown>(
     return metadata;
   };
 }
-
 
 export function ifPropertyType<
   Metadata,
