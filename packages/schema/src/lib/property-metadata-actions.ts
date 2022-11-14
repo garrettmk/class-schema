@@ -1,5 +1,5 @@
-import { PropertyAction } from "@/metadata-rules";
-import { ensureArray, MaybeArray} from "@/util";
+import { PropertyAction } from "metadata-rules";
+import { ensureArray, MaybeArray} from "common";
 import { TypeFn } from "./util/types";
 import { PrototypeTargetContext, PropertyMetadata } from "./property-metadata-types";
 

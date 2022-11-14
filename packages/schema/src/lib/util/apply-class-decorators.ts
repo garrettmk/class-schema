@@ -1,5 +1,5 @@
 import { chainClassDecorators, ConditionalClassDecorator } from './chain-class-decorators';
-import { Constructor } from '@/lib/types';
+import { Constructor } from 'lib/types';
 
 /**
  * Chains a list of `ClassDecorators`, then applies the resulting decorator

@@ -1,5 +1,5 @@
-import { PropertyKey } from "@/metadata-manager";
-import { ensureArray, MaybeArray } from "@/util";
+import { PropertyKey } from "metadata-manager";
+import { ensureArray, MaybeArray } from "common";
 
 
 export type MetadataTransform<Metadata, Context = unknown> =

@@ -7,9 +7,9 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "@/metadata-rules": ["./packages/metadata-rules/src/index.ts"],
-      "@/metadata-transforms": ["./packages/metadata-transforms/src/index.ts"],
-      "@/schema": ["./packages/schema/src/index.ts"],
+      "metadata-rules": ["./packages/metadata-rules/src/index.ts"],
+      "metadata-transforms": ["./packages/metadata-transforms/src/index.ts"],
+      "schema": ["./packages/schema/src/index.ts"],
       "common": ["./packages/common/src/index.ts"],
       "metadata-actions": ["./packages/metadata-actions/src/index.ts"],
       "metadata-manager": ["./packages/metadata-manager/src/index.ts"]

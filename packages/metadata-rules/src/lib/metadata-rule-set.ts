@@ -1,4 +1,4 @@
-import { MaybeArray, ensureArray } from "@/util";
+import { MaybeArray, ensureArray } from "common";
 import { MetadataRule, MetadataAction } from "./metadata-rule-types";
 
 

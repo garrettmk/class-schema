@@ -1,8 +1,8 @@
-import { ifProperty, IfPropertyPredicate, PropertyTransform } from '@/metadata-transforms';
-import { PropertyDecorator, PropertyKey } from '@/metadata-manager';
+import { ifProperty, IfPropertyPredicate, PropertyTransform } from 'metadata-transforms';
+import { PropertyDecorator, PropertyKey } from 'metadata-manager';
 import { BooleanFieldMetadata, PropertyMetadata, PrototypeTargetContext } from './property-metadata-types';
 import { getTypeInfo } from './util/get-type-info';
-import { Constructor, ensureArray, MaybeArray, merge } from '@/util';
+import { Constructor, ensureArray, MaybeArray, merge } from 'common';
 import { Equals, IsArray, IsBoolean, IsIn, IsOptional, IsString, Matches, MaxLength, MinLength, NotEquals } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TypeFn } from './util/types';

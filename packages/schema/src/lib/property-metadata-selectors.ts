@@ -1,6 +1,6 @@
-import { PropertyKey } from "@/metadata-manager";
-import { PropertySelector } from "@/metadata-rules";
-import { Constructor } from "@/util";
+import { PropertyKey } from "metadata-manager";
+import { PropertySelector } from "metadata-rules";
+import { Constructor } from "common";
 import { PropertyMetadata } from "./property-metadata-types";
 import { getTypeInfo } from "./util/get-type-info";
 

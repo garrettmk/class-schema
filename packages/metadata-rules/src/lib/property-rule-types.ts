@@ -1,5 +1,5 @@
-import { PropertyKey } from "@/metadata-manager";
-import { MaybeArray } from '@/util';
+import { PropertyKey } from "metadata-manager";
+import { MaybeArray } from 'common';
 
 export type PropertySelector<PropertyMetadata, Context = unknown> = 
     (meta: PropertyMetadata, propertyKey: PropertyKey, context: Context) => unknown;

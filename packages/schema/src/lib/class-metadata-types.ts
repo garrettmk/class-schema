@@ -1,5 +1,5 @@
-import { ClassMetadataDecoratorFn, MetadataManagerClass, PropertyKey, PropertyMetadataDecoratorFn } from "@/metadata-manager";
-import { Constructor } from "@/util";
+import { ClassMetadataDecoratorFn, MetadataManagerClass, PropertyKey, PropertyMetadataDecoratorFn } from "metadata-manager";
+import { Constructor } from "common";
 import { TypeFn, TargetContext } from "./util/types";
 
 

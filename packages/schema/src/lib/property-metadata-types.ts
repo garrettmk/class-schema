@@ -1,5 +1,5 @@
 import { TargetContext, TypeFn } from "./util/types"
-import { MetadataManagerClass, PropertyMetadataDecoratorFn } from '@/metadata-manager';
+import { MetadataManagerClass, PropertyMetadataDecoratorFn } from 'metadata-manager';
 
 
 export type GenericFieldMetadata<T = unknown> = {

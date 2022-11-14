@@ -1,4 +1,4 @@
-import { MaybeArray } from '@/util';
+import { MaybeArray } from 'common';
 
 
 /**

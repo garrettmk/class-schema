@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsArray, IsBoolean, IsOptional } from "class-validator";
-import { and, not, PropertyRuleSet } from "@/metadata-rules";
+import { and, not, PropertyRuleSet } from "metadata-rules";
 import { BooleanFieldMetadata, GenericFieldMetadata, PrototypeTargetContext } from "./property-metadata-types";
 import { decorateProperty, decoratePropertyWith, setPropertyFaker } from "./property-metadata-actions";
 import { innerTypeExtends, innerTypeMatches, isArrayField, isConstructorField, isFakerUnset, propertyMetadataMatches } from "./property-metadata-selectors";

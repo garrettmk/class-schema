@@ -1,7 +1,7 @@
 import { PropertyMetadata } from "../property-metadata-types";
 import { getTypeInfo } from "./get-type-info";
 import { TypeFn } from "./types";
-import { listOf, flip } from "@/util";
+import { listOf, flip } from "common";
 
 
 

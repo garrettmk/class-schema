@@ -1,6 +1,6 @@
-import { ClassDecorator } from "@/metadata-manager";
-import { MetadataAction } from "@/metadata-rules";
-import { ensureArray, MaybeArray } from "@/util";
+import { ClassDecorator } from "metadata-manager";
+import { MetadataAction } from "metadata-rules";
+import { ensureArray, MaybeArray } from "common";
 import { ClassTargetContext } from "./class-metadata-types";
 
 
