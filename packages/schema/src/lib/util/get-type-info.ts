@@ -1,5 +1,5 @@
-import { TypeFn } from "../class-metadata-types";
 import { getInnerType } from "./inner-type";
+import { TypeFn } from "./types";
 
 export function getTypeInfo(typeFn: TypeFn) {
     const type = typeFn();

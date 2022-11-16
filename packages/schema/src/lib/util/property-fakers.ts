@@ -1,15 +1,15 @@
 import { faker } from "@faker-js/faker";
-import { BooleanFieldMetadata, StringFieldMetadata } from "../property-metadata-types";
+import { BooleanPropertyMetadata, StringPropertyMetadata } from "../class-schema-types";
 import { fakerMaker } from "./faker-maker";
 import { TypeFn } from "./types";
 import { random } from "radash";
 
 
-export function booleanFieldFaker(metadata: BooleanFieldMetadata): TypeFn {
+export function booleanFieldFaker(metadata: BooleanPropertyMetadata): TypeFn<boolean> {
     return fakerMaker(metadata, faker.datatype.boolean);
 }
 
-export function stringFieldFaker(metadata: StringFieldMetadata): TypeFn {
+export function stringFieldFaker(metadata: StringPropertyMetadata): TypeFn<string> {
     const { maxLength, minLength = 0, in: _in } = metadata;
     let fakerFn: TypeFn;
     

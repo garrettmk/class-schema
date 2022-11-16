@@ -1,19 +1,21 @@
-import { PropertyMetadata } from "../property-metadata-types";
+import { PropertyMetadata } from "../class-schema-types";
 import { getTypeInfo } from "./get-type-info";
 import { TypeFn } from "./types";
-import { listOf, flip } from "common";
+import { listOf, flip, AnyFunction } from "common";
 
 
 
-export function fakerMaker<T, O = T>(metadata: PropertyMetadata<T>, fakerFn: TypeFn<O>): TypeFn {
+export function fakerMaker<T, O = T>(metadata: PropertyMetadata<T>, fakerFn: TypeFn<O>): TypeFn<T> {
     const { isArray } = getTypeInfo(metadata.type);
     const { optional } = metadata;
 
-    const _fakerFn = isArray
+    let _fakerFn: AnyFunction = isArray
         ? () => listOf(3, () => fakerFn())
         : fakerFn;
 
-    return optional
+    _fakerFn = optional
         ? () => flip(_fakerFn(), undefined)
         : () => _fakerFn();
+
+    return _fakerFn as TypeFn<T>
 }

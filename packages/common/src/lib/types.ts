@@ -6,7 +6,7 @@ export type Constructor<T = any> = new () => T;
 /**
  * Represents any function. Preferred over using `Function` as a type.
  */
-export type AnyFunction = () => any;
+export type AnyFunction = (...args: any[]) => any;
 
 /**
  * A value of type T, or an array of items of type T

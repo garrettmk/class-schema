@@ -1,62 +1,33 @@
-import { MaybeArray } from 'common';
-import { MetadataAction, applyActions } from './metadata-actions';
 
-export type MetadataSelector<Metadata, Context = unknown> = (
-  metadata: Metadata,
-  context: Context
-) => unknown;
+export type MetadataSelector<Metadata, Context = unknown> =
+  (metadata: Metadata, context: Context) => unknown;
 
-export function ifMetadata<Metadata, Context = unknown>(
-  selector: MetadataSelector<Metadata, Context>,
-  thenActions: MaybeArray<MetadataAction<Metadata, Context>>,
-  elseActions?: MaybeArray<MetadataAction<Metadata, Context>>
-): MetadataAction<Metadata, Context> {
-  return function (metadata, context) {
-    const actions = selector(metadata, context) ? thenActions : elseActions;
-    if (actions) return applyActions(metadata, context, actions);
+export type MetadataTypeGuard<Metadata, Subtype extends Metadata, Context = unknown> =
+  (metadata: Metadata, context: Context) => metadata is Subtype;
 
-    return metadata;
+
+export function hasKeys<Metadata extends object, Key extends keyof Metadata>(...keys: Key[]): MetadataTypeGuard<Metadata, Metadata & Required<Pick<Metadata, Key>>> {
+  return function (metadata): metadata is Metadata & Required<Pick<Metadata, Key>> {
+      return keys.every(key => key in metadata);
+  }
+}
+
+export function hasAnyKeys<Metadata extends object>(...keys: PropertyKey[]): MetadataSelector<Metadata> {
+  return function (metadata) {
+      return keys.some(key => key in metadata);
   };
 }
 
-export function ifMetadataType<
-  Metadata,
-  Subtype extends Metadata,
-  Context = unknown
->(
-  predicate: (metadata: Metadata, context: Context) => metadata is Subtype,
-  thenActions: MaybeArray<MetadataAction<Subtype, Context>>,
-  elseActions?: MaybeArray<MetadataAction<Metadata, Context>>
-): MetadataAction<Metadata, Context> {
-  return function (metadata, context) {
-    if (predicate(metadata, context))
-      return applyActions(metadata, context, thenActions);
-    else if (elseActions) return applyActions(metadata, context, elseActions);
-
-    return metadata;
-  };
+export function isUnset<Metadata extends object, Key extends keyof Metadata>(...keys: Key[]): MetadataTypeGuard<Metadata, Metadata & Partial<Pick<Metadata, Key>>> {
+  return function (metadata): metadata is Metadata & Record<Key, undefined> {
+      return !keys.every(key => metadata[key] === undefined);
+  }
 }
 
-export function and<Params>(
-  ...conditions: ((...params: Params[]) => unknown)[]
-): (...params: Params[]) => unknown {
-  return function (...args: Params[]) {
-    return conditions.every((condition) => condition(...args));
-  };
-}
-
-export function or<Params>(
-  ...conditions: ((...params: Params[]) => unknown)[]
-): (...params: Params[]) => unknown {
-  return function (...args: Params[]) {
-    return conditions.some((condition) => condition(...args));
-  };
-}
-
-export function not<Params>(
-  condition: (...params: Params[]) => unknown
-): (...params: Params[]) => unknown {
-  return function (...args: Params[]) {
-    return !condition(...args);
-  };
+export function matchesMetadata<Metadata extends object, Context = unknown>(match: Partial<Metadata>): MetadataSelector<Metadata, Context> {
+  return function (field): boolean {
+      return Object.entries(match).every(
+          ([key, value]) => field[key as keyof Metadata] === value
+      );
+  }
 }
