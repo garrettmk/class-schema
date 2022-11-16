@@ -1,5 +1,5 @@
-import { ClassContext, PropertyMetadata, PropertyContext } from "./class-schema-types";
-import { MetadataAction } from "metadata-actions";
+import { ClassPropertyAction, PropertiesMetadataManager, ClassMetadata, ClassContext, PropertyMetadata, PropertyContext } from "./class-schema-types";
+import { MetadataAction, applyActions } from "metadata-actions";
 import { MaybeArray, ensureArray } from "common";
 
 
@@ -43,5 +43,26 @@ export function decoratePropertyWith<Metadata extends PropertyMetadata, Context 
         const decorators = ensureArray(decoratorsFn(propertyMetadata, context));
 
         decorators.forEach(decorator => decorator(target, propertyKey));
+    }
+}
+
+
+export function applyPropertyActions(actions: ClassPropertyAction[]): MetadataAction<ClassMetadata, ClassContext> {
+    return function (metadata, context) {
+        const { target } = context;
+        const propertiesMetadata = PropertiesMetadataManager.getMetadata(target.prototype);
+        
+        const result = Object.entries(propertiesMetadata).reduce(
+            (result, [propertyKey, propertyMetadata]) => {
+                const propertyContext: PropertyContext = { ...context, propertyKey };
+
+                result[propertyKey] = applyActions(propertyMetadata, propertyContext, actions);
+                
+                return result;
+            },
+            propertiesMetadata
+        ) ?? propertiesMetadata;
+
+        PropertiesMetadataManager.setMetadata(target.prototype, result);
     }
 }

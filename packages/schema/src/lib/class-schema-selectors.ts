@@ -1,6 +1,6 @@
 import { Constructor } from "common";
-import { MetadataTypeGuard } from "metadata-actions";
-import { PropertyMetadata } from "./class-schema-types";
+import { MetadataTypeGuard, MetadataSelector } from "metadata-actions";
+import { PropertyMetadata, ClassMetadata, ClassContext, ObjectType } from "./class-schema-types";
 import { getTypeInfo } from "./util/get-type-info";
 
 
@@ -42,5 +42,11 @@ export function innerTypeExtends<Type extends Constructor>(type: Type): Metadata
         const fieldType = getTypeInfo(metadata.type).innerType as Constructor;
 
         return fieldType === type || (fieldType?.prototype instanceof type)
+    }
+}
+
+export function isObjectType(type: ObjectType): MetadataSelector<ClassMetadata, ClassContext> {
+    return function (metadata) {
+        return Boolean(metadata.objectTypes?.includes(type));
     }
 }

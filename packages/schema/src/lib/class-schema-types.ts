@@ -1,5 +1,6 @@
-import { PropertyKey } from 'metadata-manager';
 import { Constructor } from "common";
+import { MetadataAction } from 'metadata-actions';
+import { MetadataManagerClass, PropertyKey } from 'metadata-manager';
 import { TypeFn } from "./util/types";
 
 
@@ -18,8 +19,6 @@ export type ClassMetadata = {
 export type ClassContext = {
     target: Constructor
 };
-
-
 
 export type CommonPropertyMetadata<T = unknown> = {
     type: TypeFn
@@ -63,3 +62,11 @@ export type PropertyContext = {
     target: object
     propertyKey: PropertyKey
 };
+
+export const ClassMetadataManager = MetadataManagerClass<ClassMetadata, Constructor>();
+
+export type ClassMetadataAction = MetadataAction<ClassMetadata, ClassContext>;
+
+export const PropertiesMetadataManager = MetadataManagerClass<PropertiesMetadata, object>();
+
+export type ClassPropertyAction = MetadataAction<PropertyMetadata, PropertyContext>;
