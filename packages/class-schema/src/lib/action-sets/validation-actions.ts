@@ -3,6 +3,7 @@ import {
   Equals,
   IsArray,
   IsBoolean,
+  IsDate,
   IsIn,
   IsNotIn,
   IsNumber,
@@ -10,14 +11,16 @@ import {
   IsString,
   Matches,
   Max,
+  MaxDate,
   MaxLength,
   Min,
+  MinDate,
   MinLength,
   NotEquals,
 } from 'class-validator';
 import { Constructor, and } from 'common';
 import {
-  hasKeys,
+  isSet,
   ifMetadata,
   isUnset,
   MetadataAction,
@@ -35,12 +38,9 @@ import {
 } from '../class-schema-selectors';
 import { PropertyMetadata, PropertyContext } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
-import { booleanFieldFaker, stringFieldFaker } from '../util/property-fakers';
+import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 
-export const validationActions: MetadataAction<
-  PropertyMetadata,
-  PropertyContext
->[] = [
+export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),
 
   ifMetadata(isArrayField, decorateProperty(IsArray())),
@@ -58,7 +58,7 @@ export const validationActions: MetadataAction<
   ),
 
   //
-  // Boolean
+  // Booleans
   //
 
   ifMetadata(innerTypeMatches(Boolean), [
@@ -68,7 +68,7 @@ export const validationActions: MetadataAction<
       })
     ),
 
-    ifMetadata(hasKeys('eq'), [
+    ifMetadata(isSet('eq'), [
       decoratePropertyWith((meta) =>
         Equals(meta.eq, {
           each: isArrayField(meta),
@@ -76,7 +76,7 @@ export const validationActions: MetadataAction<
       ),
     ]),
 
-    ifMetadata(hasKeys('ne'), [
+    ifMetadata(isSet('ne'), [
       decoratePropertyWith((meta) =>
         NotEquals(meta.ne, {
           each: isArrayField(meta),
@@ -102,7 +102,7 @@ export const validationActions: MetadataAction<
       })
     ),
 
-    ifMetadata(hasKeys('minLength'), [
+    ifMetadata(isSet('minLength'), [
       decoratePropertyWith((meta) =>
         MinLength(meta.minLength, {
           each: isArrayField(meta),
@@ -110,7 +110,7 @@ export const validationActions: MetadataAction<
       ),
     ]),
 
-    ifMetadata(hasKeys('maxLength'), [
+    ifMetadata(isSet('maxLength'), [
       decoratePropertyWith((meta) =>
         MaxLength(meta.maxLength, {
           each: isArrayField(meta),
@@ -118,7 +118,7 @@ export const validationActions: MetadataAction<
       ),
     ]),
 
-    ifMetadata(hasKeys('in'), [
+    ifMetadata(isSet('in'), [
       decoratePropertyWith((meta) =>
         IsIn(meta.in, {
           each: isArrayField(meta),
@@ -126,7 +126,7 @@ export const validationActions: MetadataAction<
       ),
     ]),
 
-    ifMetadata(hasKeys('nin'), [
+    ifMetadata(isSet('nin'), [
       decoratePropertyWith((meta) =>
         IsNotIn(meta.nin, {
           each: isArrayField(meta),
@@ -134,7 +134,7 @@ export const validationActions: MetadataAction<
       ),
     ]),
 
-    ifMetadata(hasKeys('matches'), [
+    ifMetadata(isSet('matches'), [
       decoratePropertyWith((meta) =>
         Matches(meta.matches, {
           each: isArrayField(meta),
@@ -154,29 +154,79 @@ export const validationActions: MetadataAction<
   //
 
   ifMetadata(innerTypeMatches(Number), [
-    decoratePropertyWith((meta) =>
-      IsNumber(
-        {},
-        {
-          each: isArrayField(meta),
-        }
-      )
+    decoratePropertyWith((meta) => IsNumber({}, {
+        each: isArrayField(meta),
+      })
     ),
 
-    ifMetadata(hasKeys('min'), [
-      decoratePropertyWith((meta) =>
-        Min(meta.min, {
-          each: isArrayField(meta),
-        })
-      ),
+    ifMetadata(isSet('min'), [
+      decoratePropertyWith((meta) => Min(meta.min, {
+        each: isArrayField(meta),
+      })),
     ]),
 
-    ifMetadata(hasKeys('max'), [
-      decoratePropertyWith((meta) =>
-        Max(meta.max, {
-          each: isArrayField(meta),
-        })
-      ),
+    ifMetadata(isSet('max'), [
+      decoratePropertyWith((meta) => Max(meta.max, {
+        each: isArrayField(meta),
+      })),
     ]),
+
+    ifMetadata(isSet('eq'), [
+      decoratePropertyWith(meta => Equals(meta.eq, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isSet('ne'), [
+      decoratePropertyWith(meta => NotEquals(meta.ne, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isSet('in'), [
+      decoratePropertyWith(meta => IsIn(meta.in, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isSet('nin'), [
+      decoratePropertyWith(meta => IsNotIn(meta.nin, {
+        each:  isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isUnset('faker'), [
+      updateMetadata(meta => ({
+        faker: numberFieldFaker(meta)
+      }))
+    ])
   ]),
+
+  //
+  // Dates
+  //
+
+  ifMetadata(innerTypeMatches(Date), [
+    decoratePropertyWith(meta => IsDate({
+      each: isArrayField(meta)
+    })),
+
+    ifMetadata(isSet('min'), [
+      decoratePropertyWith(meta => MinDate(meta.min, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isSet('max'), [
+      decoratePropertyWith(meta => MaxDate(meta.max, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isUnset('faker'), [
+      updateMetadata(meta => ({
+        faker: dateFieldFaker(meta)
+      }))
+    ])
+  ])
 ];

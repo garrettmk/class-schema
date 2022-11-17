@@ -1,4 +1,3 @@
-import { select } from 'radash';
 import { applyActions, ifMetadata, updateMetadata } from '../lib/metadata-actions';
 
 describe('applyActions', () => {

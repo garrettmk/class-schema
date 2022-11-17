@@ -6,13 +6,13 @@ export type MetadataTypeGuard<Metadata, Subtype extends Metadata, Context = unkn
   (metadata: Metadata, context: Context) => metadata is Subtype;
 
 
-export function hasKeys<Metadata extends object, Key extends keyof Metadata>(...keys: Key[]): MetadataTypeGuard<Metadata, Metadata & Required<Pick<Metadata, Key>>> {
+export function isSet<Metadata extends object, Key extends keyof Metadata>(...keys: Key[]): MetadataTypeGuard<Metadata, Metadata & Required<Pick<Metadata, Key>>> {
   return function (metadata): metadata is Metadata & Required<Pick<Metadata, Key>> {
       return keys.every(key => key in metadata);
   }
 }
 
-export function hasAnyKeys<Metadata extends object>(...keys: PropertyKey[]): MetadataSelector<Metadata> {
+export function isAnySet<Metadata extends object>(...keys: PropertyKey[]): MetadataSelector<Metadata> {
   return function (metadata) {
       return keys.some(key => key in metadata);
   };
