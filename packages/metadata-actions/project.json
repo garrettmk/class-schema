@@ -5,13 +5,24 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "nx:run-commands",
+      "dependsOn": ["rollup"],
+      "options": {
+        "commands": [
+          "mkdir -p node_modules/@garrettmk",
+          "ln -s -f ../../dist/packages/metadata-actions node_modules/@garrettmk"
+        ]
+      }
+    },
+    "rollup": {
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "project": "packages/metadata-actions/package.json",
         "outputPath": "dist/packages/metadata-actions",
         "main": "packages/metadata-actions/src/index.ts",
         "tsConfig": "packages/metadata-actions/tsconfig.lib.json",
-        "assets": ["packages/metadata-actions/*.md"]
+        "format": ["cjs", "esm"]
       }
     },
     "lint": {

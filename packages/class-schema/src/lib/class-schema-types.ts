@@ -1,7 +1,7 @@
-import { Constructor } from 'common'
-import { MetadataAction } from 'metadata-actions'
-import { MetadataManagerClass, PropertyKey } from 'metadata-manager';
-import { TypeFn } from './util/types';
+import { MetadataAction } from '@garrettmk/metadata-actions'
+import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
+import { TypeFn, Constructor } from './util/types';
+
 
 export enum ObjectType {
   InputType = 'INPUT_TYPE',

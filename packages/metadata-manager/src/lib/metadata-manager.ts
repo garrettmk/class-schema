@@ -1,6 +1,7 @@
 import { shake } from 'radash';
-import { MetadataDict, MetadataManager } from './types';
-import { getPrototypeChain, merge, Constructor } from 'common';
+import { MetadataDict, MetadataManager, Constructor } from './types';
+import { getPrototypeChain } from './util/get-prototype-chain';
+import { merge } from './util/merge';
 
 /**
  * Creates a new class implementing the `MetadataManager` interface. All

@@ -1,13 +1,12 @@
-import {
-  ClassMetadataDecoratorFn,
-  PropertyMetadataDecoratorFn,
-} from 'metadata-manager';
-import {
-  ClassMetadataManager,
-  PropertiesMetadataManager,
-} from './class-schema-types';
+import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from '@garrettmk/metadata-manager';
+import { ClassMetadataManager, PropertiesMetadataManager, StringPropertyMetadata } from './class-schema-types';
 
-export const ClassMeta = ClassMetadataDecoratorFn(ClassMetadataManager);
-export const PropertyMeta = PropertyMetadataDecoratorFn(
-  PropertiesMetadataManager
-);
+export const Class = ClassMetadataDecoratorFn(ClassMetadataManager);
+export const Property = PropertyMetadataDecoratorFn(PropertiesMetadataManager);
+
+
+export const String = (meta?: Omit<StringPropertyMetadata, 'type'>) => Property({
+  type: () => String,
+  ...meta
+});
+

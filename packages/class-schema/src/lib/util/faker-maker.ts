@@ -1,7 +1,8 @@
 import { PropertyMetadata } from '../class-schema-types';
 import { getTypeInfo } from './get-type-info';
-import { TypeFn } from './types';
-import { listOf, flip, AnyFunction } from 'common';
+import { TypeFn, AnyFunction } from './types';
+import { listOf } from './list-of';
+import { flip } from './flip';
 
 export function fakerMaker<T, O = T>(
   metadata: PropertyMetadata<T>,

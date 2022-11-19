@@ -1,6 +1,6 @@
-import { ensureArray, MaybeArray, Values } from 'common';
-import { PropertyKey } from 'metadata-manager';
 import { MetadataSelector, MetadataTypeGuard } from './metadata-selectors';
+import { PropertyKey, MaybeArray } from './util/types';
+import { ensureArray } from './util/ensure-array';
 
 
 export type MetadataAction<Metadata, Context = unknown> = 

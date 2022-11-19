@@ -1,4 +1,5 @@
 {
-  "name": "metadata-manager",
-  "version": "0.0.1"
+  "name": "@garrettmk/metadata-manager",
+  "version": "0.0.1",
+  "type": "commonjs"
 }

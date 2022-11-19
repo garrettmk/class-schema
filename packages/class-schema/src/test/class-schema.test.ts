@@ -1,12 +1,9 @@
-import {
-  ClassMeta,
-  ClassMetadataManager,
-  FieldMeta,
-} from '../lib/class-metadata-types';
+import { ClassMetadataManager } from '../lib/class-schema-types';
+import { ClassMeta, PropertyMeta } from '../lib/class-schema-decorators';
 
 @ClassMeta({ description: 'A test class' })
 class TestClass {
-  @FieldMeta({ type: () => String })
+  @PropertyMeta({ type: () => String })
   name!: string;
 }
 

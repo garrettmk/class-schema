@@ -4,7 +4,7 @@ import { fakerMaker } from './faker-maker';
 import { TypeFn } from './types';
 import { random } from 'radash';
 import { generateNumber } from './generate-number';
-import { flip } from 'common';
+import { flip } from './flip';
 
 
 export function booleanFieldFaker(metadata: BooleanPropertyMetadata): TypeFn<boolean> {

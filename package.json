@@ -9,6 +9,11 @@
     "@nrwl/jest": "15.0.4",
     "@nrwl/js": "^15.0.4",
     "@nrwl/linter": "15.0.4",
+    "@nrwl/rollup": "15.0.4",
+    "@nrwl/web": "^15.2.0",
+    "@swc/cli": "~0.1.55",
+    "@swc/core": "^1.2.173",
+    "@swc/jest": "0.2.20",
     "@types/jest": "28.1.1",
     "@types/node": "16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
@@ -29,9 +34,11 @@
   ],
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
+    "@swc/helpers": "~0.4.11",
     "class-transformer": "^0.5.1",
     "class-transformer-validator": "^0.9.1",
     "class-validator": "^0.13.2",
+    "core-js": "^3.26.1",
     "radash": "^8.1.0",
     "tslib": "^2.3.0"
   }

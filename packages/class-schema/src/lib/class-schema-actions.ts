@@ -1,17 +1,10 @@
-import {
-  ClassPropertyAction,
-  PropertiesMetadataManager,
-  ClassMetadata,
-  ClassContext,
-  PropertyMetadata,
-  PropertyContext,
-} from './class-schema-types';
-import { MetadataAction, applyActions } from 'metadata-actions';
-import { MaybeArray, ensureArray } from 'common';
+import { ClassPropertyAction, PropertiesMetadataManager, ClassMetadata, ClassContext, PropertyMetadata, PropertyContext } from './class-schema-types';
+import { MetadataAction, applyActions } from '@garrettmk/metadata-actions';
+import { MaybeArray } from './util/types';
+import { ensureArray } from './util/ensure-array';
 
-export function decorateClass<Metadata, Context extends ClassContext>(
-  ...decorators: ClassDecorator[]
-): MetadataAction<Metadata, Context> {
+
+export function decorateClass<Metadata, Context extends ClassContext>(...decorators: ClassDecorator[]): MetadataAction<Metadata, Context> {
   return function (metadata, context) {
     const { target } = context;
 

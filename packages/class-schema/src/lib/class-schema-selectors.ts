@@ -1,11 +1,6 @@
-import { Constructor } from 'common';
-import { MetadataTypeGuard, MetadataSelector } from 'metadata-actions';
-import {
-  PropertyMetadata,
-  ClassMetadata,
-  ClassContext,
-  ObjectType,
-} from './class-schema-types';
+import { Constructor } from './util/types';
+import { MetadataTypeGuard, MetadataSelector } from '@garrettmk/metadata-actions';
+import { PropertyMetadata, ClassMetadata, ClassContext, ObjectType } from './class-schema-types';
 import { getTypeInfo } from './util/get-type-info';
 
 export function isOptionalField(

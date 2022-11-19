@@ -1,44 +1,13 @@
 import { Type } from 'class-transformer';
-import {
-  Equals,
-  IsArray,
-  IsBoolean,
-  IsDate,
-  IsIn,
-  IsNotIn,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Matches,
-  Max,
-  MaxDate,
-  MaxLength,
-  Min,
-  MinDate,
-  MinLength,
-  NotEquals,
-} from 'class-validator';
-import { Constructor, and } from 'common';
-import {
-  isSet,
-  ifMetadata,
-  isUnset,
-  MetadataAction,
-  updateMetadata,
-} from 'metadata-actions';
-import {
-  decorateProperty,
-  decoratePropertyWith,
-} from '../class-schema-actions';
-import {
-  innerTypeMatches,
-  isArrayField,
-  isConstructorField,
-  isOptionalField,
-} from '../class-schema-selectors';
+import { Equals, IsArray, IsBoolean, IsDate, IsIn, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
+import { Constructor } from '../util/types';
+import { isSet, ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
+import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
+import { innerTypeMatches, isArrayField, isConstructorField, isOptionalField } from '../class-schema-selectors';
 import { PropertyMetadata, PropertyContext } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
 import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
+import { and } from '../util/logical';
 
 export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),

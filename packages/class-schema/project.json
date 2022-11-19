@@ -5,13 +5,14 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+      "project": "packages/class-schema/package.json",
         "outputPath": "dist/packages/class-schema",
         "main": "packages/class-schema/src/index.ts",
         "tsConfig": "packages/class-schema/tsconfig.lib.json",
-        "assets": ["packages/class-schema/*.md"]
+        "external": ["@garrettmk/metadata-manager", "@garrettmk/metadata-actions"]
       }
     },
     "lint": {

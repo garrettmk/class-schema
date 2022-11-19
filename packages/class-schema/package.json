@@ -1,4 +1,11 @@
 {
-  "name": "class-schema",
-  "version": "0.0.1"
+  "name": "@garrettmk/class-schema",
+  "version": "0.0.1",
+  "dependencies": {
+    "@garrettmk/metadata-manager": "^0.0.1",
+    "@garrettmk/metadata-actions": "^0.0.1",
+    "class-transformer": "^0.5.1",
+    "class-transformer-validator": "^0.9.1",
+    "class-validator": "^0.13.2"
+  }
 }

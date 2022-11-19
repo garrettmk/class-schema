@@ -1,18 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "target": "es2019",
-    "module": "commonjs",
+    "module": "ESNext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "paths": {
-      "class-schema": ["./packages/class-schema/src/index.ts"],
-      "common": ["./packages/common/src/index.ts"],
-      "metadata-actions": ["./packages/metadata-actions/src/index.ts"],
-      "metadata-manager": ["./packages/metadata-manager/src/index.ts"]
-    },
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node"
   }
 }

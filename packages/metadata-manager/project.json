@@ -5,13 +5,24 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "nx:run-commands",
+      "dependsOn": ["rollup"],
+      "options": {
+        "commands": [
+          "mkdir -p node_modules/@garrettmk",
+          "ln -s -f ../../dist/packages/metadata-manager node_modules/@garrettmk"
+        ]
+      }
+    },
+    "rollup": {
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "project": "packages/metadata-manager/package.json",
         "outputPath": "dist/packages/metadata-manager",
         "main": "packages/metadata-manager/src/index.ts",
         "tsConfig": "packages/metadata-manager/tsconfig.lib.json",
-        "assets": ["packages/metadata-manager/*.md"]
+        "format": ["esm", "cjs"]
       }
     },
     "document": {
@@ -19,6 +30,13 @@
       "options": {
         "command": "npx typedoc --options packages/metadata-manager/typedoc.json"
       }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs metadata-manager {args.ver} {args.tag}"
+      },
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

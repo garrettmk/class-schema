@@ -1,5 +1,10 @@
 
 /**
+ * A constructor function.
+ */
+export type Constructor<T = any> = new () => T;
+
+/**
  * A class decorator function.
  */
 export type ClassDecorator<T = unknown> = (target: T) => T | void;

@@ -1,4 +1,4 @@
-import { MaybeArray } from 'metadata-rules';
+import { MaybeArray } from './types';
 
 export function getInnerType<T>(type: MaybeArray<T>): T {
   if (Array.isArray(type)) return type[0];
