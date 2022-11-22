@@ -1,5 +1,5 @@
 import { Constructor } from './util/types';
-import { MetadataTypeGuard, MetadataSelector } from '@garrettmk/metadata-actions';
+import { MetadataTypeGuard, MetadataSelector, PropertyContext } from '@garrettmk/metadata-actions';
 import { PropertyMetadata, ClassMetadata, ClassContext, ObjectType, Enum } from './class-schema-types';
 import { getTypeInfo } from './util/get-type-info';
 
@@ -27,6 +27,14 @@ export function isConstructorField(
 export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMetadata<Enum> {
   const { innerType } = getTypeInfo(metadata.type);
   return typeof innerType === 'object';
+}
+
+export function isObjectType(
+  type: ObjectType
+): MetadataSelector<ClassMetadata, ClassContext> {
+  return function (metadata) {
+    return Boolean(metadata.objectTypes?.includes(type));
+  };
 }
 
 
@@ -76,10 +84,8 @@ export function innerTypeExtends<Type extends Constructor>(
   };
 }
 
-export function isObjectType(
-  type: ObjectType
-): MetadataSelector<ClassMetadata, ClassContext> {
-  return function (metadata) {
-    return Boolean(metadata.objectTypes?.includes(type));
-  };
+export function matchesPropertyKey<K>(...keys: K[]): MetadataSelector<any, PropertyContext> {
+  return function (_, context): boolean {
+    return keys.some(key => context.propertyKey === key);
+  }
 }

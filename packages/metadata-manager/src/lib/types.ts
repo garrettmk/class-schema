@@ -15,6 +15,8 @@ export type PropertyKey = string | symbol;
  */
 export type MetadataKey = string | symbol;
 
+export type MetadataKeys<T extends object, K extends keyof T = keyof T> = K extends MetadataKey ? K : never;
+
 /**
  * A metadata dictionary.
  */

@@ -1,5 +1,5 @@
 import { ClassPropertyAction, PropertiesMetadataManager, ClassMetadata, ClassContext, PropertyMetadata, PropertyContext } from './class-schema-types';
-import { MetadataAction, applyActions } from '@garrettmk/metadata-actions';
+import { MetadataAction, applyActions, entries } from '@garrettmk/metadata-actions';
 import { MaybeArray } from './util/types';
 import { ensureArray } from './util/ensure-array';
 
@@ -66,7 +66,7 @@ export function applyPropertyActions(
     const propertiesMetadata = PropertiesMetadataManager.getMetadata(target);
 
     const result =
-      Object.entries(propertiesMetadata).reduce(
+      entries(propertiesMetadata).reduce(
         (result, [propertyKey, propertyMetadata]) => {
           const propertyContext: PropertyContext = { ...context, propertyKey };
 

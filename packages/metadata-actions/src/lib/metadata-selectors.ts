@@ -1,3 +1,4 @@
+import { entries } from "./util/entries";
 
 export type MetadataSelector<Metadata, Context = unknown> =
   (metadata: Metadata, context: Context) => unknown;
@@ -25,9 +26,17 @@ export function isUnset<Metadata extends object, Key extends keyof Metadata>(...
 }
 
 export function matchesMetadata<Metadata extends object, Context = unknown>(match: Partial<Metadata>): MetadataSelector<Metadata, Context> {
-  return function (field): boolean {
-      return Object.entries(match).every(
-          ([key, value]) => field[key as keyof Metadata] === value
-      );
-  }
+  return function (metadata): boolean {
+    return entries(match).every(
+      ([key, value]) => metadata[key] === value
+    );
+  };
+}
+
+export function matchesContext<Context extends object>(match: Partial<Context>): MetadataSelector<unknown, Context> {
+  return function (metadata, context): boolean {
+    return entries(match).every(
+      ([key, value]) => context[key] === value
+    );
+  };
 }

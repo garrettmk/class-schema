@@ -8,4 +8,5 @@ export abstract class BaseModel extends BaseObject {
   @Property(() => Id, { primaryKey })
   id!: Id;
 }
-  
+
+export type BaseModelConstructor = typeof BaseModel;

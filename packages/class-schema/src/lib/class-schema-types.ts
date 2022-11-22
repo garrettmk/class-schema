@@ -1,5 +1,6 @@
 import { MetadataAction } from '@garrettmk/metadata-actions';
 import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
+import { BaseModelConstructor } from './base-model';
 import { IdConstructor } from './id';
 import { Constructor, InnerType, TypeFn, Values } from './util/types';
 //
@@ -51,6 +52,10 @@ export type ArrayPropertyMetadata = {
     maxItems?: number
 }
 
+export type OneToOneMetadata = {
+  oneToOne?: true
+}
+
 export type BooleanConstraints = {
   eq?: boolean
   ne?: boolean
@@ -100,6 +105,7 @@ export type PropertyMetadata<T = unknown, V = T> =
   T extends (IdConstructor)[] ?       CommonPropertyMetadata<(IdConstructor)[], string[]>         & ArrayPropertyMetadata     & IdConstraints :
   T extends Enum ?                    CommonPropertyMetadata<T, Values<T>>                        & ScalarPropertyMetadata    & EnumConstraints<T> :
   T extends Enum[] ?                  CommonPropertyMetadata<T[], Values<T>[]>                    & ArrayPropertyMetadata     & EnumConstraints<InnerType<T>> :
+  T extends BaseModelConstructor ?    CommonPropertyMetadata<T>                                   & OneToOneMetadata :
   CommonPropertyMetadata<T, V>;
 
 
