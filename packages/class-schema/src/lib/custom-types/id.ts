@@ -10,7 +10,7 @@ export class Id extends String {
     }
 
     static fake() {
-        return random(1, Number.MIN_SAFE_INTEGER) + '';
+        return random(1, Number.MAX_SAFE_INTEGER) + '';
     }
 }
 

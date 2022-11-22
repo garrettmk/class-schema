@@ -1,14 +1,15 @@
 import { Type } from 'class-transformer';
-import { Equals, IsArray, IsBoolean, IsDate, IsEnum, IsIn, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
+import { Equals, IsArray, IsBoolean, IsDate, IsEnum, IsIn, IsInt, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
 import { Constructor } from '../util/types';
 import { isSet, ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
 import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
-import { innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
+import { innerTypeExtends, innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
 import { PropertyMetadata, PropertyContext } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
 import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 import { and, not } from '../util/logical';
 import { Id, IsId } from '../custom-types/id';
+import { Int } from '../custom-types/int';
 
 export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),
@@ -52,12 +53,6 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
           each: isArrayField(meta),
         })
       ),
-    ]),
-
-    ifMetadata(isUnset('faker'), [
-      updateMetadata((meta) => ({
-        faker: booleanFieldFaker(meta),
-      })),
     ]),
   ]),
 
@@ -111,19 +106,13 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
         })
       ),
     ]),
-
-    ifMetadata(isUnset('faker'), [
-      updateMetadata((meta) => ({
-        faker: stringFieldFaker(meta),
-      })),
-    ]),
   ]),
 
   //
   // Numbers
   //
 
-  ifMetadata(innerTypeMatches(Number), [
+  ifMetadata(innerTypeExtends(Number), [
     decoratePropertyWith((meta) => IsNumber({}, {
         each: isArrayField(meta),
       })
@@ -164,12 +153,12 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
         each:  isArrayField(meta)
       }))
     ]),
+  ]),
 
-    ifMetadata(isUnset('faker'), [
-      updateMetadata(meta => ({
-        faker: numberFieldFaker(meta)
-      }))
-    ])
+  ifMetadata(innerTypeMatches(Int), [
+    decoratePropertyWith(meta => IsInt({
+      each: isArrayField(meta)
+    }))
   ]),
 
   //
@@ -192,12 +181,6 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
         each: isArrayField(meta)
       }))
     ]),
-
-    ifMetadata(isUnset('faker'), [
-      updateMetadata(meta => ({
-        faker: dateFieldFaker(meta)
-      }))
-    ])
   ]),
 
   //
@@ -230,11 +213,5 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
     decoratePropertyWith(meta => IsId({
       each: isArrayField(meta)
     })),
-
-    ifMetadata(isUnset('faker'), [
-      updateMetadata(meta => ({
-        faker: () => Id.fake()
-      }))
-    ])
   ])
 ];

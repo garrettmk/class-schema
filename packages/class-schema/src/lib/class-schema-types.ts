@@ -1,7 +1,9 @@
 import { MetadataAction } from '@garrettmk/metadata-actions';
 import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
 import { BaseModelConstructor } from './base-model';
-import { IdConstructor } from './custom-types/id';
+import { FloatConstructor } from './custom-types/float';
+import { Id, IdConstructor } from './custom-types/id';
+import { IntConstructor } from './custom-types/int';
 import { Constructor, InnerType, TypeFn, Values } from './util/types';
 
 //
@@ -40,7 +42,7 @@ export type CommonPropertyMetadata<T = unknown, V = T> = {
     optional?: boolean
     description?: string
     faker?: () => V
-    default?: () => V
+    default?: V | (() => V)
 }
 
 
@@ -48,13 +50,17 @@ export type ScalarPropertyMetadata = {
     unique?: boolean
 }
 
-export type ArrayPropertyMetadata = {
-    minItems?: number
-    maxItems?: number
+export type IdPropertyMetadata = ScalarPropertyMetadata & {
+  primaryKey?: boolean
 }
 
-export type OneToOneMetadata = {
-  oneToOne?: true
+export type ArrayPropertyMetadata = {
+  nullableItems?: boolean
+}
+
+export type ArrayConstraints = {
+    minItems?: number
+    maxItems?: number
 }
 
 export type BooleanConstraints = {
@@ -85,7 +91,10 @@ export type DateConstraints = {
 }
 
 export type IdConstraints = {
-  primaryKey?: boolean
+  eq?: Id
+  ne?: Id
+  in?: Id[]
+  nin?: Id[]
 }
 
 export type EnumConstraints<T extends Enum = Enum> = {
@@ -93,20 +102,48 @@ export type EnumConstraints<T extends Enum = Enum> = {
   nin?: Values<T>[]
 }
 
+export type ObjectConstraints<T extends object, Keys extends keyof T = keyof T> = {
+  [k in Keys]?: Constraints<T[k]>
+}
+
+export type Constraints<T> =
+  T extends StringConstructor       ? StringConstraints :
+  T extends StringConstructor[]     ? StringConstraints & ArrayConstraints :
+  T extends NumberConstructor       ? NumberConstraints :
+  T extends NumberConstructor[]     ? NumberConstraints & ArrayConstraints :
+  T extends BooleanConstructor      ? BooleanConstraints :
+  T extends BooleanConstructor[]    ? BooleanConstraints & ArrayConstraints :
+  T extends DateConstructor         ? DateConstraints :
+  T extends DateConstructor[]       ? DateConstraints & ArrayConstraints :
+  T extends Enum                    ? EnumConstraints<Enum> :
+  T extends Enum[]                  ? EnumConstraints<Enum> & ArrayConstraints :
+  T extends IdConstructor           ? IdConstraints :
+  T extends IdConstructor[]         ? IdConstraints & ArrayConstraints :
+  T extends IntConstructor          ? NumberConstraints :
+  T extends IntConstructor[]        ? NumberConstraints & ArrayConstraints :
+  T extends FloatConstructor        ? NumberConstraints :
+  T extends FloatConstructor[]      ? NumberConstraints & ArrayConstraints :
+  T extends Constructor             ? ObjectConstraints<T> :
+  never;
+
 export type PropertyMetadata<T = unknown, V = T> =
-  T extends StringConstructor ?       CommonPropertyMetadata<StringConstructor, string>           & ScalarPropertyMetadata    & StringConstraints :
-  T extends StringConstructor[] ?     CommonPropertyMetadata<StringConstructor[], string[]>       & ArrayPropertyMetadata     & StringConstraints :
-  T extends NumberConstructor ?       CommonPropertyMetadata<NumberConstructor, number>           & ScalarPropertyMetadata    & NumberConstraints :
-  T extends NumberConstructor[] ?     CommonPropertyMetadata<NumberConstructor[], number[]>       & ArrayPropertyMetadata     & NumberConstraints :
-  T extends BooleanConstructor ?      CommonPropertyMetadata<BooleanConstructor, boolean>         & ScalarPropertyMetadata    & BooleanConstraints :
-  T extends BooleanConstructor[] ?    CommonPropertyMetadata<BooleanConstructor[], boolean[]>     & ArrayPropertyMetadata     & BooleanConstraints :
-  T extends DateConstructor ?         CommonPropertyMetadata<DateConstructor, Date>               & ScalarPropertyMetadata    & DateConstraints :
-  T extends DateConstructor[] ?       CommonPropertyMetadata<DateConstructor[], Date[]>           & ArrayPropertyMetadata     & DateConstraints :
-  T extends IdConstructor ?           CommonPropertyMetadata<IdConstructor, string>               & ScalarPropertyMetadata    & IdConstraints :
-  T extends (IdConstructor)[] ?       CommonPropertyMetadata<(IdConstructor)[], string[]>         & ArrayPropertyMetadata     & IdConstraints :
-  T extends Enum ?                    CommonPropertyMetadata<T, Values<T>>                        & ScalarPropertyMetadata    & EnumConstraints<T> :
-  T extends Enum[] ?                  CommonPropertyMetadata<T[], Values<T>[]>                    & ArrayPropertyMetadata     & EnumConstraints<InnerType<T>> :
-  T extends BaseModelConstructor ?    CommonPropertyMetadata<T>                                   & OneToOneMetadata :
+  T extends StringConstructor ?       CommonPropertyMetadata<StringConstructor, string>           & ScalarPropertyMetadata    & Constraints<StringConstructor> :
+  T extends StringConstructor[] ?     CommonPropertyMetadata<StringConstructor[], string[]>       & ArrayPropertyMetadata     & Constraints<StringConstructor[]> :
+  T extends NumberConstructor ?       CommonPropertyMetadata<NumberConstructor, number>           & ScalarPropertyMetadata    & Constraints<NumberConstructor> :
+  T extends NumberConstructor[] ?     CommonPropertyMetadata<NumberConstructor[], number[]>       & ArrayPropertyMetadata     & Constraints<NumberConstructor[]> :
+  T extends BooleanConstructor ?      CommonPropertyMetadata<BooleanConstructor, boolean>         & ScalarPropertyMetadata    & Constraints<BooleanConstructor> :
+  T extends BooleanConstructor[] ?    CommonPropertyMetadata<BooleanConstructor[], boolean[]>     & ArrayPropertyMetadata     & Constraints<BooleanConstructor[]> :
+  T extends DateConstructor ?         CommonPropertyMetadata<DateConstructor, Date>               & ScalarPropertyMetadata    & Constraints<DateConstructor> :
+  T extends DateConstructor[] ?       CommonPropertyMetadata<DateConstructor[], Date[]>           & ArrayPropertyMetadata     & Constraints<DateConstructor[]> :
+  T extends Enum ?                    CommonPropertyMetadata<T, Values<T>>                        & ScalarPropertyMetadata    & Constraints<T> :
+  T extends Enum[] ?                  CommonPropertyMetadata<T[], Values<T>[]>                    & ArrayPropertyMetadata     & Constraints<T> :
+  T extends IdConstructor ?           CommonPropertyMetadata<IdConstructor, string>               & IdPropertyMetadata        & Constraints<IdConstructor> :
+  T extends IdConstructor[] ?         CommonPropertyMetadata<IdConstructor[], string[]>           & ArrayPropertyMetadata     & Constraints<IdConstructor[]> :
+  T extends IntConstructor ?          CommonPropertyMetadata<IntConstructor, number>              & ScalarPropertyMetadata    & Constraints<IntConstructor> :
+  T extends IntConstructor[] ?        CommonPropertyMetadata<IntConstructor[], number[]>          & ArrayPropertyMetadata     & Constraints<IntConstructor[]> :
+  T extends FloatConstructor ?        CommonPropertyMetadata<FloatConstructor, number>            & ScalarPropertyMetadata    & Constraints<FloatConstructor> :
+  T extends FloatConstructor[] ?      CommonPropertyMetadata<FloatConstructor[], number[]>        & ArrayPropertyMetadata     & Constraints<FloatConstructor[]> :
+  T extends BaseModelConstructor ?    CommonPropertyMetadata<T> :
   CommonPropertyMetadata<T, V>;
 
 

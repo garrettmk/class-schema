@@ -7,6 +7,8 @@ import { generateNumber } from './generate-number';
 import { flip } from './flip';
 import { Id, IdConstructor } from '../custom-types/id';
 import { getTypeInfo } from './get-type-info';
+import { FloatConstructor } from '../custom-types/float';
+import { IntConstructor } from '../custom-types/int';
 
 
 export function booleanFieldFaker(metadata: PropertyMetadata<BooleanConstructor | BooleanConstructor[]>) {
@@ -48,7 +50,7 @@ export function dateFieldFaker(metadata: PropertyMetadata<DateConstructor | Date
 }
 
 
-export function floatFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
+export function floatFieldFaker(metadata: PropertyMetadata<FloatConstructor | FloatConstructor[]>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
   let fakerFn: TypeFn<number>;
 
@@ -65,7 +67,7 @@ export function floatFieldFaker(metadata: PropertyMetadata<NumberConstructor | N
 }
 
 
-export function intFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
+export function intFieldFaker(metadata: PropertyMetadata<IntConstructor | IntConstructor[]>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
   let fakerFn: TypeFn<number>;
 
@@ -83,6 +85,7 @@ export function intFieldFaker(metadata: PropertyMetadata<NumberConstructor | Num
 
 
 export function numberFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
+  // @ts-expect-error too lazy to cast
   return () => flip(intFieldFaker(metadata), floatFieldFaker(metadata))();
 }
 
