@@ -20,7 +20,7 @@ export function isAnySet<Metadata extends object>(...keys: PropertyKey[]): Metad
 
 export function isUnset<Metadata extends object, Key extends keyof Metadata>(...keys: Key[]): MetadataTypeGuard<Metadata, Metadata & Partial<Pick<Metadata, Key>>> {
   return function (metadata): metadata is Metadata & Record<Key, undefined> {
-      return !keys.every(key => metadata[key] === undefined);
+      return keys.every(key => !(key in metadata) || metadata[key] === undefined);
   }
 }
 

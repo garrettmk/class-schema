@@ -1,6 +1,6 @@
 import { Constructor } from './util/types';
 import { MetadataTypeGuard, MetadataSelector } from '@garrettmk/metadata-actions';
-import { PropertyMetadata, ClassMetadata, ClassContext, ObjectType } from './class-schema-types';
+import { PropertyMetadata, ClassMetadata, ClassContext, ObjectType, Enum } from './class-schema-types';
 import { getTypeInfo } from './util/get-type-info';
 
 export function isOptionalField(
@@ -23,6 +23,12 @@ export function isConstructorField(
     typeof innerType === 'function' && Boolean(Object.getPrototypeOf(innerType))
   );
 }
+
+export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMetadata<Enum> {
+  const { innerType } = getTypeInfo(metadata.type);
+  return typeof innerType === 'object';
+}
+
 
 export function typeMatches<Type extends Constructor>(
   type: Type

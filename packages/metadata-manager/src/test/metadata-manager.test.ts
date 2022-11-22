@@ -9,7 +9,7 @@ describe('MetadataManagerClass', () => {
   class TestTargetThree {}
 
   const targetOneMeta: MetadataDict = { a: 1, b: 2 };
-  const childOneMeta: MetadataDict = { b: 3 };
+  const childOneMeta: MetadataDict = { b: 3, c: 4 };
   const targetThreeMeta: MetadataDict = {};
 
   beforeEach(() => {

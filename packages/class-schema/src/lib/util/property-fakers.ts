@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { BooleanPropertyMetadata, DatePropertyMetadata, NumberPropertyMetadata, StringPropertyMetadata } from '../class-schema-types';
+import { PropertyMetadata } from '../class-schema-types';
 import { fakerMaker } from './faker-maker';
 import { TypeFn } from './types';
 import { random } from 'radash';
@@ -7,13 +7,13 @@ import { generateNumber } from './generate-number';
 import { flip } from './flip';
 
 
-export function booleanFieldFaker(metadata: BooleanPropertyMetadata): TypeFn<boolean> {
+export function booleanFieldFaker(metadata: PropertyMetadata<BooleanConstructor | BooleanConstructor[]>) {
   return fakerMaker(metadata, faker.datatype.boolean);
 }
 
-export function stringFieldFaker(metadata: StringPropertyMetadata): TypeFn<string> {
+export function stringFieldFaker(metadata: PropertyMetadata<StringConstructor | StringConstructor[]>) {
   const { maxLength, minLength = 0, in: _in } = metadata;
-  let fakerFn: TypeFn;
+  let fakerFn: TypeFn<string>;
 
   if (_in) 
     fakerFn = () => faker.helpers.arrayElement(_in);
@@ -26,9 +26,9 @@ export function stringFieldFaker(metadata: StringPropertyMetadata): TypeFn<strin
   return fakerMaker(metadata, fakerFn);
 }
 
-export function dateFieldFaker(metadata: DatePropertyMetadata): TypeFn<Date> {
+export function dateFieldFaker(metadata: PropertyMetadata<DateConstructor | DateConstructor[]>) {
   const { min, max } = metadata;
-  let fakerFn: TypeFn;
+  let fakerFn: TypeFn<Date>;
 
   if (min !== undefined && max !== undefined)
       fakerFn = () => faker.date.between(min, max);
@@ -46,9 +46,9 @@ export function dateFieldFaker(metadata: DatePropertyMetadata): TypeFn<Date> {
 }
 
 
-export function floatFieldFaker(metadata: NumberPropertyMetadata): TypeFn<number> {
+export function floatFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
-  let fakerFn: TypeFn;
+  let fakerFn: TypeFn<number>;
 
   if (eq)
     fakerFn = () => eq;
@@ -63,9 +63,9 @@ export function floatFieldFaker(metadata: NumberPropertyMetadata): TypeFn<number
 }
 
 
-export function intFieldFaker(metadata: NumberPropertyMetadata): TypeFn<number> {
+export function intFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
-  let fakerFn: TypeFn;
+  let fakerFn: TypeFn<number>;
 
   if (eq)
     fakerFn = () => eq;
@@ -80,6 +80,6 @@ export function intFieldFaker(metadata: NumberPropertyMetadata): TypeFn<number> 
 }
 
 
-export function numberFieldFaker(field: NumberPropertyMetadata): TypeFn<number> {
+export function numberFieldFaker(field: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
   return () => flip(intFieldFaker(field), floatFieldFaker(field))();
 }

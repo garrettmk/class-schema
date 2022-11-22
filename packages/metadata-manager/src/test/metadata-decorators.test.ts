@@ -4,7 +4,7 @@ import { MetadataDict, Constructor } from "../lib/types";
 
 
 describe('PropertyMetadataDecorator', () => {
-    const TestMetadataManager = MetadataManagerClass();
+    const TestMetadataManager = MetadataManagerClass<MetadataDict, Constructor>();
     const Property = PropertyMetadataDecoratorFn(TestMetadataManager);
     
     class TestTarget {
@@ -21,7 +21,7 @@ describe('PropertyMetadataDecorator', () => {
             propertyB: { b: 2 }
         };
 
-        expect(TestMetadataManager.getMetadata(TestTarget.prototype)).toMatchObject(expected);
+        expect(TestMetadataManager.getMetadata(TestTarget)).toMatchObject(expected);
     });
 });
 

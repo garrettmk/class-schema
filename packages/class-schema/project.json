@@ -12,7 +12,8 @@
         "outputPath": "dist/packages/class-schema",
         "main": "packages/class-schema/src/index.ts",
         "tsConfig": "packages/class-schema/tsconfig.lib.json",
-        "external": ["@garrettmk/metadata-manager", "@garrettmk/metadata-actions"]
+        "external": ["@garrettmk/metadata-manager", "@garrettmk/metadata-actions"],
+        "format": ["cjs"]
       }
     },
     "lint": {

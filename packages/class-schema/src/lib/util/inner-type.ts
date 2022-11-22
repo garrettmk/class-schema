@@ -1,6 +1,6 @@
-import { MaybeArray } from './types';
+import { InnerType } from './types';
 
-export function getInnerType<T>(type: MaybeArray<T>): T {
+export function innerType<T>(type: T): InnerType<T> {
   if (Array.isArray(type)) return type[0];
-  else return type;
+  else return type as InnerType<T>;
 }

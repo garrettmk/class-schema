@@ -1,12 +1,12 @@
-import { MetadataDict, PropertyDecorator, MetadataManager, ClassDecorator } from "./types";
+import { MetadataDict, PropertyDecorator, MetadataManager, ClassDecorator, Constructor } from "./types";
 
 
-export type PropertyMetadataDecorator<PropertyMetadata, Target> = (meta: PropertyMetadata) => PropertyDecorator<Target>;
+export type PropertyMetadataDecorator<PropertyMetadata> = (meta: PropertyMetadata) => PropertyDecorator;
 
-export function PropertyMetadataDecoratorFn<PropertyMetadata, Target>(manager: MetadataManager<MetadataDict<PropertyMetadata>, Target>): PropertyMetadataDecorator<PropertyMetadata, Target> {
+export function PropertyMetadataDecoratorFn<PropertyMetadata>(manager: MetadataManager<MetadataDict<PropertyMetadata>, Constructor>): PropertyMetadataDecorator<PropertyMetadata> {
   return function (meta: PropertyMetadata) {
     return function (target, key) {
-      manager.mergeMetadata(target as Target, {
+      manager.mergeMetadata(target.constructor as Constructor, {
         [key]: meta
       });
     };
@@ -15,11 +15,11 @@ export function PropertyMetadataDecoratorFn<PropertyMetadata, Target>(manager: M
 
 
 
-export type ClassMetadataDecorator<Metadata, Target> = (meta: Metadata) => ClassDecorator<Target>;
+export type ClassMetadataDecorator<Metadata> = (meta: Metadata) => ClassDecorator;
 
-export function ClassMetadataDecoratorFn<Metadata, Target>(manager: MetadataManager<Metadata, Target>): ClassMetadataDecorator<Metadata, Target> {
+export function ClassMetadataDecoratorFn<Metadata>(manager: MetadataManager<Metadata, Constructor>): ClassMetadataDecorator<Metadata> {
   return function (meta: Metadata) {
-    return function (target: Target) {
+    return function (target) {
       manager.mergeMetadata(target, meta);
     };
   };

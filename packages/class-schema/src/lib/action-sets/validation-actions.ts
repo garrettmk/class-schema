@@ -1,13 +1,16 @@
 import { Type } from 'class-transformer';
-import { Equals, IsArray, IsBoolean, IsDate, IsIn, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
+import { Equals, IsArray, IsBoolean, IsDate, IsEnum, IsIn, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
 import { Constructor } from '../util/types';
 import { isSet, ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
 import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
-import { innerTypeMatches, isArrayField, isConstructorField, isOptionalField } from '../class-schema-selectors';
-import { PropertyMetadata, PropertyContext } from '../class-schema-types';
+import { innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
+import { PropertyMetadata, PropertyContext, Id } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
 import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
-import { and } from '../util/logical';
+import { and, not } from '../util/logical';
+import { innerType } from '../util/inner-type';
+import { IsId } from '../util/is-id-decorator';
+
 
 export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),
@@ -17,7 +20,7 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
   ifMetadata(
     and(
       isConstructorField,
-      innerTypeMatches<Constructor>(String, Number, Boolean, Date)
+      not(innerTypeMatches<Constructor>(String, Number, Boolean, Date))
     ),
     [
       decoratePropertyWith((meta) =>
@@ -195,6 +198,44 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
     ifMetadata(isUnset('faker'), [
       updateMetadata(meta => ({
         faker: dateFieldFaker(meta)
+      }))
+    ])
+  ]),
+
+  //
+  // Enums
+  //
+
+  ifMetadata(isEnumField, [
+    decoratePropertyWith(meta => IsEnum(getTypeInfo(meta.type).innerType, {
+      each: isArrayField(meta)
+    })),
+
+    ifMetadata(isSet('in'), [
+      decoratePropertyWith(meta => IsIn(meta.in, {
+        each: isArrayField(meta)
+      }))
+    ]),
+
+    ifMetadata(isSet('nin'), [
+      decoratePropertyWith(meta => IsNotIn(meta.nin, {
+        each: isArrayField(meta)
+      })),
+    ])
+  ]),
+
+  //
+  // Id
+  //
+
+  ifMetadata(innerTypeMatches(Id), [
+    decoratePropertyWith(meta => IsId({
+      each: isArrayField(meta)
+    })),
+
+    ifMetadata(isUnset('faker'), [
+      updateMetadata(meta => ({
+        faker: () => Id.fake()
       }))
     ])
   ])

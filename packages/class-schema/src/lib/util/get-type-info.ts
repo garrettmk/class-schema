@@ -1,7 +1,13 @@
-import { getInnerType } from './inner-type';
-import { TypeFn } from './types';
+import { innerType as getInnerType } from './inner-type';
+import { InnerType, TypeFn } from './types';
 
-export function getTypeInfo(typeFn: TypeFn) {
+export type TypeFnInfo<T> = {
+  type: T
+  innerType: InnerType<T>
+  isArray: boolean
+}
+
+export function getTypeInfo<T>(typeFn: TypeFn<T>): TypeFnInfo<T> {
   const type = typeFn();
   const innerType = getInnerType(type);
 

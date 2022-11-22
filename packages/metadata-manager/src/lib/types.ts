@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 
 /**
  * A constructor function.
@@ -7,7 +8,7 @@ export type Constructor<T = any> = new () => T;
 /**
  * A class decorator function.
  */
-export type ClassDecorator<T = unknown> = (target: T) => T | void;
+export type ClassDecorator = (target: Constructor) => Constructor | void;
 
 /**
  * A property key.
@@ -17,7 +18,7 @@ export type PropertyKey = string | symbol;
 /**
  * A property decorator function.
  */
-export type PropertyDecorator<T = object> = (target: T, key: PropertyKey) => void;
+export type PropertyDecorator = (target: Object, key: PropertyKey) => void;
 
 /**
  * A valid metadata key.

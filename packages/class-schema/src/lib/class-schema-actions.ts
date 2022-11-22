@@ -54,7 +54,7 @@ export function decoratePropertyWith<
     const { target, propertyKey } = context;
     const decorators = ensureArray(decoratorsFn(propertyMetadata, context));
 
-    decorators.forEach((decorator) => decorator(target, propertyKey));
+    decorators.forEach((decorator) => decorator(target.prototype, propertyKey));
   };
 }
 
@@ -63,9 +63,7 @@ export function applyPropertyActions(
 ): MetadataAction<ClassMetadata, ClassContext> {
   return function (metadata, context) {
     const { target } = context;
-    const propertiesMetadata = PropertiesMetadataManager.getMetadata(
-      target.prototype
-    );
+    const propertiesMetadata = PropertiesMetadataManager.getMetadata(target);
 
     const result =
       Object.entries(propertiesMetadata).reduce(
@@ -83,6 +81,6 @@ export function applyPropertyActions(
         propertiesMetadata
       ) ?? propertiesMetadata;
 
-    PropertiesMetadataManager.setMetadata(target.prototype, result);
+    PropertiesMetadataManager.setMetadata(target, result);
   };
 }

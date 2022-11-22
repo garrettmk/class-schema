@@ -1,12 +1,19 @@
 import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from '@garrettmk/metadata-manager';
-import { ClassMetadataManager, PropertiesMetadataManager, StringPropertyMetadata } from './class-schema-types';
+import { applyActions } from '@garrettmk/metadata-actions';
+import { validationActions } from './action-sets/validation-actions';
+import { applyPropertyActions } from './class-schema-actions';
+import { ClassContext, ClassMetadataManager, PropertiesMetadataManager } from './class-schema-types';
+import { Constructor } from './util/types';
 
-export const Class = ClassMetadataDecoratorFn(ClassMetadataManager);
-export const Property = PropertyMetadataDecoratorFn(PropertiesMetadataManager);
+export const ClassMeta = ClassMetadataDecoratorFn(ClassMetadataManager);
 
+export const PropertyMeta = PropertyMetadataDecoratorFn(PropertiesMetadataManager);
 
-export const String = (meta?: Omit<StringPropertyMetadata, 'type'>) => Property({
-  type: () => String,
-  ...meta
-});
+export function Validated(): ClassDecorator {
+  return function (target) {
+    const metadata = {};
+    const context: ClassContext = { target: target as unknown as Constructor };
 
+    applyActions(metadata, context, applyPropertyActions(validationActions));
+  }
+}
