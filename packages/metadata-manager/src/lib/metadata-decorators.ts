@@ -1,4 +1,4 @@
-import { MetadataDict, PropertyDecorator, MetadataManager, ClassDecorator, Constructor } from "./types";
+import { MetadataDict, MetadataManager, Constructor } from "./types";
 
 
 export type PropertyMetadataDecorator<PropertyMetadata> = (meta: PropertyMetadata) => PropertyDecorator;
@@ -20,7 +20,7 @@ export type ClassMetadataDecorator<Metadata> = (meta: Metadata) => ClassDecorato
 export function ClassMetadataDecoratorFn<Metadata>(manager: MetadataManager<Metadata, Constructor>): ClassMetadataDecorator<Metadata> {
   return function (meta: Metadata) {
     return function (target) {
-      manager.mergeMetadata(target, meta);
+      manager.mergeMetadata(target as unknown as Constructor, meta);
     };
   };
 }

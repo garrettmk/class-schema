@@ -1,10 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { PropertyMetadata } from '../class-schema-types';
+import { Enum, PropertyMetadata } from '../class-schema-types';
 import { fakerMaker } from './faker-maker';
 import { TypeFn } from './types';
 import { random } from 'radash';
 import { generateNumber } from './generate-number';
 import { flip } from './flip';
+import { Id, IdConstructor } from '../id';
+import { getTypeInfo } from './get-type-info';
 
 
 export function booleanFieldFaker(metadata: PropertyMetadata<BooleanConstructor | BooleanConstructor[]>) {
@@ -80,6 +82,18 @@ export function intFieldFaker(metadata: PropertyMetadata<NumberConstructor | Num
 }
 
 
-export function numberFieldFaker(field: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
-  return () => flip(intFieldFaker(field), floatFieldFaker(field))();
+export function numberFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
+  return () => flip(intFieldFaker(metadata), floatFieldFaker(metadata))();
+}
+
+export function idFieldFaker(metadata: PropertyMetadata<IdConstructor | IdConstructor[]>) {
+  return fakerMaker(metadata, () => Id.fake())
+}
+
+export function enumFieldFaker(metadata: PropertyMetadata<Enum | Enum[], string | number>) {
+  const { innerType } = getTypeInfo(metadata.type as TypeFn<Enum>);
+  const values = Object.values(innerType);
+  const fakerFn = () => faker.helpers.arrayElement(values);
+
+  return fakerMaker(metadata, fakerFn);
 }

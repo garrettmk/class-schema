@@ -1,21 +1,11 @@
-import { MetadataAction } from '@garrettmk/metadata-actions'
+import { MetadataAction } from '@garrettmk/metadata-actions';
 import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
-import { random } from 'radash';
-import { TypeFn, Constructor, Values, InnerType } from './util/types';
-
+import { IdConstructor } from './id';
+import { Constructor, InnerType, TypeFn, Values } from './util/types';
 //
 // Custom types
 //
 
-export class Id extends String {
-  static isId(value: unknown): value is Id {
-    return typeof value === 'string' && value.length > 0;
-  }
-
-  static fake() {
-    return random(1, Number.MIN_SAFE_INTEGER) + '';
-  }
-};
 
 export type Enum = Record<string, string | number>;
 
@@ -106,10 +96,10 @@ export type PropertyMetadata<T = unknown, V = T> =
   T extends BooleanConstructor[] ?    CommonPropertyMetadata<BooleanConstructor[], boolean[]>     & ArrayPropertyMetadata     & BooleanConstraints :
   T extends DateConstructor ?         CommonPropertyMetadata<DateConstructor, Date>               & ScalarPropertyMetadata    & DateConstraints :
   T extends DateConstructor[] ?       CommonPropertyMetadata<DateConstructor[], Date[]>           & ArrayPropertyMetadata     & DateConstraints :
-  T extends typeof Id ?               CommonPropertyMetadata<typeof Id, string>                   & ScalarPropertyMetadata    & IdConstraints :
-  T extends (typeof Id)[] ?           CommonPropertyMetadata<(typeof Id)[], string[]>             & ArrayPropertyMetadata     & IdConstraints :
-  T extends Enum ?                    CommonPropertyMetadata<T>                                   & ScalarPropertyMetadata    & EnumConstraints<T> :
-  T extends Enum[] ?                  CommonPropertyMetadata<T[]>                                 & ArrayPropertyMetadata     & EnumConstraints<InnerType<T>> :
+  T extends IdConstructor ?           CommonPropertyMetadata<IdConstructor, string>               & ScalarPropertyMetadata    & IdConstraints :
+  T extends (IdConstructor)[] ?       CommonPropertyMetadata<(IdConstructor)[], string[]>         & ArrayPropertyMetadata     & IdConstraints :
+  T extends Enum ?                    CommonPropertyMetadata<T, Values<T>>                        & ScalarPropertyMetadata    & EnumConstraints<T> :
+  T extends Enum[] ?                  CommonPropertyMetadata<T[], Values<T>[]>                    & ArrayPropertyMetadata     & EnumConstraints<InnerType<T>> :
   CommonPropertyMetadata<T, V>;
 
 

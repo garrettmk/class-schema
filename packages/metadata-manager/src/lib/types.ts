@@ -6,19 +6,9 @@
 export type Constructor<T = any> = new () => T;
 
 /**
- * A class decorator function.
- */
-export type ClassDecorator = (target: Constructor) => Constructor | void;
-
-/**
  * A property key.
  */
 export type PropertyKey = string | symbol;
-
-/**
- * A property decorator function.
- */
-export type PropertyDecorator = (target: Object, key: PropertyKey) => void;
 
 /**
  * A valid metadata key.

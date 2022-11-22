@@ -4,13 +4,11 @@ import { Constructor } from '../util/types';
 import { isSet, ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
 import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
 import { innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
-import { PropertyMetadata, PropertyContext, Id } from '../class-schema-types';
+import { PropertyMetadata, PropertyContext } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
 import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 import { and, not } from '../util/logical';
-import { innerType } from '../util/inner-type';
-import { IsId } from '../util/is-id-decorator';
-
+import { Id, IsId } from '../id';
 
 export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),
