@@ -1,4 +1,4 @@
-export * from './lib/id';
+export * from './lib/custom-types/id';
 export * from './lib/class-schema-types';
 export * from './lib/class-schema-decorators';
 export * from './lib/class-schema-selectors';

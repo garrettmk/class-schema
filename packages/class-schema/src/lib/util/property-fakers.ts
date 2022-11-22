@@ -5,7 +5,7 @@ import { TypeFn } from './types';
 import { random } from 'radash';
 import { generateNumber } from './generate-number';
 import { flip } from './flip';
-import { Id, IdConstructor } from '../id';
+import { Id, IdConstructor } from '../custom-types/id';
 import { getTypeInfo } from './get-type-info';
 
 

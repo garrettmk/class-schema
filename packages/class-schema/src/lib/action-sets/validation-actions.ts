@@ -8,7 +8,7 @@ import { PropertyMetadata, PropertyContext } from '../class-schema-types';
 import { getTypeInfo } from '../util/get-type-info';
 import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 import { and, not } from '../util/logical';
-import { Id, IsId } from '../id';
+import { Id, IsId } from '../custom-types/id';
 
 export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
   ifMetadata(isOptionalField, decorateProperty(IsOptional())),

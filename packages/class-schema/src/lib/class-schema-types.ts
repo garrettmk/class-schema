@@ -1,8 +1,9 @@
 import { MetadataAction } from '@garrettmk/metadata-actions';
 import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
 import { BaseModelConstructor } from './base-model';
-import { IdConstructor } from './id';
+import { IdConstructor } from './custom-types/id';
 import { Constructor, InnerType, TypeFn, Values } from './util/types';
+
 //
 // Custom types
 //

@@ -2,7 +2,7 @@ import { ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/
 import { innerTypeMatches, isEnumField } from '../class-schema-selectors';
 import { PropertyContext, PropertyMetadata } from '../class-schema-types';
 import { booleanFieldFaker, dateFieldFaker, enumFieldFaker, idFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
-import { Id } from '../id';
+import { Id } from '../custom-types/id';
 
 
 export const baseObjectActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
