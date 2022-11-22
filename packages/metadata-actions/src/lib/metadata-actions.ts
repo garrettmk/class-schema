@@ -1,6 +1,7 @@
 import { MetadataSelector, MetadataTypeGuard } from './metadata-selectors';
-import { PropertyKey, MaybeArray } from './util/types';
+import { PropertyKey, MaybeArray, Values } from './util/types';
 import { ensureArray } from './util/ensure-array';
+import { entries } from './util/entries';
 
 
 export type MetadataAction<Metadata, Context = unknown> = 
@@ -13,9 +14,24 @@ export function applyActions<Metadata, Context = unknown>(metadata: Metadata, co
   ) ?? metadata;
 }
 
+
 export type PropertyContext = {
   propertyKey: PropertyKey
 }
+
+export function applyActionsToProperties<Metadata extends object, Context>(metadata: Metadata, context: Context, actions: MaybeArray<MetadataAction<Values<Metadata>, Context & PropertyContext>>): Metadata {
+  return entries(metadata).reduce(
+    (result, [propertyKey, propertyMeta]) => {
+      const propertyContext = { propertyKey, ...context };
+
+      result[propertyKey as keyof Metadata] = applyActions(propertyMeta, propertyContext, actions);
+
+      return result;
+    },
+    metadata
+  ) ?? metadata;
+}
+
 
 
 export function ifMetadata<Metadata, Subtype extends Metadata = Metadata, Context = unknown>(typeGuard: MetadataTypeGuard<Metadata, Subtype, Context>, thenActions: MaybeArray<MetadataAction<Subtype, Context>>, elseActions?: MaybeArray<MetadataAction<Metadata, Context>>): MetadataAction<Metadata, Context>;

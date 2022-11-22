@@ -15,3 +15,4 @@ export * from './lib/util/list-of';
 export * from './lib/util/logical';
 export * from './lib/util/property-fakers';
 export * from './lib/util/flags';
+export * from './lib/util/get-type-info';
