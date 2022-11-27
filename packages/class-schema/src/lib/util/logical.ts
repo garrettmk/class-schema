@@ -1,4 +1,4 @@
-import { AnyFunction } from "./types";
+import { AnyFunction } from "@garrettmk/ts-utils";
 
 
 export function and<Fn extends AnyFunction>(...conditions: ((...params: Parameters<Fn>) => unknown)[]): (...params: Parameters<Fn>) => unknown {

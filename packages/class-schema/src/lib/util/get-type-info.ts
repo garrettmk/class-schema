@@ -9,7 +9,7 @@ export type TypeFnInfo<T> = {
 
 export function getTypeInfo<T>(typeFn: TypeFn<T>): TypeFnInfo<T> {
   const type = typeFn();
-  const innerType = getInnerType(type);
+  const innerType = getInnerType(typeFn);
 
   return {
     type,

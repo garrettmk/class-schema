@@ -1,10 +1,11 @@
+import { applyActions, applyActionsToProperties } from '@garrettmk/metadata-actions';
 import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from '@garrettmk/metadata-manager';
-import { applyActions } from '@garrettmk/metadata-actions';
-import { validationActions } from './action-sets/validation-actions';
-import { applyPropertyActions } from './class-schema-actions';
-import { ClassContext, ClassMetadataManager, PropertiesMetadataManager, PropertyMetadata } from './class-schema-types';
-import { Constructor, TypeFn } from './util/types';
+import { Constructor } from '@garrettmk/ts-utils';
 import { baseObjectActions } from './action-sets/base-object-actions';
+import { validationActions } from './action-sets/validation-actions';
+import { applyActionsToPropertyMetadata } from './class-schema-actions';
+import { ClassContext, ClassMetadata, ClassMetadataManager, PropertiesMetadataManager, PropertyMetadata } from './class-schema-types';
+import { TypeFn } from './util/types';
 
 export const ClassMeta = ClassMetadataDecoratorFn(ClassMetadataManager);
 
@@ -14,24 +15,27 @@ export function Property<T>(type: TypeFn<T>, meta?: Omit<PropertyMetadata<T>, 't
   return PropertyMeta({ type, ...meta });
 }
 
-
-export function Validated(): ClassDecorator {
+export function Class(meta: ClassMetadata = {}): ClassDecorator {
   return function (target) {
-    const metadata = {};
-    const context: ClassContext = { target: target as unknown as Constructor };
+    const ctor = target as unknown as Constructor;
+    const context: ClassContext = { target: ctor };
 
-    applyActions(metadata, context, applyPropertyActions(validationActions));
-  }
-}
-
-export function BaseObjectType(): ClassDecorator {
-  return function (target) {
-    const metadata = {};
-    const context: ClassContext = { target: target as unknown as Constructor };
-
-    applyActions(metadata, context, applyPropertyActions([
+    const metadata = applyActions(meta, context, applyActionsToPropertyMetadata([
       ...validationActions,
       ...baseObjectActions
     ]));
+
+    ClassMetadataManager.setMetadata(ctor, metadata);
+  }
+}
+
+
+export function Validated(): ClassDecorator {
+  return function (target) {
+    const ctor = target as unknown as Constructor;
+    const metadata = PropertiesMetadataManager.getMetadata(ctor);
+    const context: ClassContext = { target: ctor };
+
+    applyActionsToProperties(metadata, context, validationActions);
   }
 }

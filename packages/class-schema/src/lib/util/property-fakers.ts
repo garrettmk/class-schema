@@ -4,7 +4,7 @@ import { fakerMaker } from './faker-maker';
 import { TypeFn } from './types';
 import { random } from 'radash';
 import { generateNumber } from './generate-number';
-import { flip } from './flip';
+import { flip } from '@garrettmk/ts-utils';
 import { Id, IdConstructor } from '../custom-types/id';
 import { getTypeInfo } from './get-type-info';
 import { FloatConstructor } from '../custom-types/float';

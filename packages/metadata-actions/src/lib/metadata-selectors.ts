@@ -25,10 +25,10 @@ export function isUnset<Metadata extends object, Key extends keyof Metadata>(...
   }
 }
 
-export function matchesMetadata<Metadata extends object, Context = unknown>(match: Partial<Metadata>): MetadataSelector<Metadata, Context> {
-  return function (metadata): boolean {
-    return entries(match).every(
-      ([key, value]) => metadata[key] === value
+export function matchesMetadata<Metadata extends object, Key extends keyof Metadata, Match = Pick<Metadata, Key>>(match: Match): MetadataTypeGuard<Metadata, Match & Metadata> {
+  return function (metadata): metadata is Match & Metadata {
+    return entries(match as unknown as object).every(
+      ([key, value]) => metadata[key as keyof Metadata] === value
     );
   };
 }
@@ -36,7 +36,7 @@ export function matchesMetadata<Metadata extends object, Context = unknown>(matc
 export function matchesContext<Context extends object>(match: Partial<Context>): MetadataSelector<unknown, Context> {
   return function (metadata, context): boolean {
     return entries(match).every(
-      ([key, value]) => context[key] === value
+      ([key, value]) => context[key as keyof Context] === value
     );
   };
 }

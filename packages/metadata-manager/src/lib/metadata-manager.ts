@@ -1,7 +1,6 @@
 import { shake } from 'radash';
-import { MetadataDict, MetadataManager, Constructor } from './types';
-import { getPrototypeChain } from './util/get-prototype-chain';
-import { merge } from './util/merge';
+import { MetadataDict, MetadataManager } from './types';
+import { getPrototypeChain, merge, Constructor } from '@garrettmk/ts-utils';
 
 /**
  * Creates a new class implementing the `MetadataManager` interface. All
@@ -56,7 +55,8 @@ export function MetadataManagerClass<Metadata extends MetadataDict, Target>(meta
     }
 
     public static entries(): [Target, Metadata][] {
-      return Array.from(this.metadatas);
+      return Array.from(this.metadatas.keys())
+        .map(target => [target, this.getMetadata(target)]);
     }
   };
 }

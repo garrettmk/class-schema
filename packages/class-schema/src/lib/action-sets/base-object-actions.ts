@@ -1,13 +1,13 @@
 import { ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
 import { innerTypeExtends, innerTypeMatches, isEnumField } from '../class-schema-selectors';
-import { PropertyContext, PropertyMetadata } from '../class-schema-types';
+import { ClassPropertyContext, PropertyMetadata } from '../class-schema-types';
 import { booleanFieldFaker, dateFieldFaker, enumFieldFaker, floatFieldFaker, idFieldFaker, intFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 import { Id } from '../custom-types/id';
 import { Int } from '../custom-types/int';
 import { Float } from '../custom-types/float';
 
 
-export const baseObjectActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
+export const baseObjectActions: MetadataAction<PropertyMetadata, ClassPropertyContext>[] = [
   
   //
   // Booleans

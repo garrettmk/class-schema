@@ -1,18 +1,17 @@
-import { Type } from 'class-transformer';
+import { ifMetadata, isSet, MetadataAction } from '@garrettmk/metadata-actions';
+import { Constructor } from '@garrettmk/ts-utils';
+import { Transform, Type } from 'class-transformer';
 import { Equals, IsArray, IsBoolean, IsDate, IsEnum, IsIn, IsInt, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
-import { Constructor } from '../util/types';
-import { isSet, ifMetadata, isUnset, MetadataAction, updateMetadata } from '@garrettmk/metadata-actions';
 import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
 import { innerTypeExtends, innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
-import { PropertyMetadata, PropertyContext } from '../class-schema-types';
-import { getTypeInfo } from '../util/get-type-info';
-import { booleanFieldFaker, dateFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
-import { and, not } from '../util/logical';
+import { ClassPropertyContext, PropertyMetadata } from '../class-schema-types';
 import { Id, IsId } from '../custom-types/id';
 import { Int } from '../custom-types/int';
+import { getTypeInfo } from '../util/get-type-info';
+import { and, not } from '../util/logical';
 
-export const validationActions: MetadataAction<PropertyMetadata, PropertyContext>[] = [
-  ifMetadata(isOptionalField, decorateProperty(IsOptional())),
+
+export const validationActions: MetadataAction<PropertyMetadata, ClassPropertyContext>[] = [
 
   ifMetadata(isArrayField, decorateProperty(IsArray())),
 
@@ -26,6 +25,13 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
         Type(() => getTypeInfo(meta.type).innerType as Constructor)
       ),
     ]
+  ),
+
+  ifMetadata(
+    isSet('default'),
+    decoratePropertyWith(meta =>
+      Transform(value => value ?? meta.default())  
+    )
   ),
 
   //
@@ -213,5 +219,12 @@ export const validationActions: MetadataAction<PropertyMetadata, PropertyContext
     decoratePropertyWith(meta => IsId({
       each: isArrayField(meta)
     })),
-  ])
+  ]),
+
+  //
+  // Common
+  //
+
+  ifMetadata(isOptionalField, decorateProperty(IsOptional())),
+
 ];

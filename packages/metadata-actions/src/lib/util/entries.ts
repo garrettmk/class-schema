@@ -1,4 +1,4 @@
-import { Values } from "./types";
+import { Values } from '@garrettmk/ts-utils';
 
 export function entries<Metadata extends object>(metadata: Metadata): [string | symbol, Values<Metadata>][] {
     const propertyKeys = [

@@ -1,7 +1,8 @@
-import { ClassPropertyAction, PropertiesMetadataManager, ClassMetadata, ClassContext, PropertyMetadata, PropertyContext } from './class-schema-types';
-import { MetadataAction, applyActions, entries } from '@garrettmk/metadata-actions';
-import { MaybeArray } from './util/types';
-import { ensureArray } from './util/ensure-array';
+import { applyActions, MetadataAction } from '@garrettmk/metadata-actions';
+import { ensureArray, MaybeArray } from '@garrettmk/ts-utils';
+import { mapValues, omit } from 'radash';
+import { ClassContext, ClassMetadata, ClassPropertyAction, ClassPropertyContext, PropertiesMetadata, PropertiesMetadataManager, PropertyMetadata } from './class-schema-types';
+import { MetadataKey } from '@garrettmk/metadata-manager';
 
 
 export function decorateClass<Metadata, Context extends ClassContext>(...decorators: ClassDecorator[]): MetadataAction<Metadata, Context> {
@@ -30,7 +31,7 @@ export function decorateClassWith<Metadata, Context extends ClassContext>(
 
 export function decorateProperty<
   Metadata extends PropertyMetadata,
-  Context extends PropertyContext
+  Context extends ClassPropertyContext
 >(...decorators: PropertyDecorator[]): MetadataAction<Metadata, Context> {
   return function (propertyMetadata, context) {
     const { target, propertyKey } = context;
@@ -41,12 +42,12 @@ export function decorateProperty<
 
 export type DecoratorsFn<
   Metadata extends PropertyMetadata,
-  Context extends PropertyContext
+  Context extends ClassPropertyContext
 > = (metadata: Metadata, context: Context) => MaybeArray<PropertyDecorator>;
 
 export function decoratePropertyWith<
   Metadata extends PropertyMetadata,
-  Context extends PropertyContext
+  Context extends ClassPropertyContext
 >(
   decoratorsFn: DecoratorsFn<Metadata, Context>
 ): MetadataAction<Metadata, Context> {
@@ -58,29 +59,47 @@ export function decoratePropertyWith<
   };
 }
 
-export function applyPropertyActions(
+export function applyActionsToPropertyMetadata(
   actions: ClassPropertyAction[]
 ): MetadataAction<ClassMetadata, ClassContext> {
-  return function (metadata, context) {
+  return function (classMetadata, context) {
     const { target } = context;
     const propertiesMetadata = PropertiesMetadataManager.getMetadata(target);
 
-    const result =
-      entries(propertiesMetadata).reduce(
-        (result, [propertyKey, propertyMetadata]) => {
-          const propertyContext: PropertyContext = { ...context, propertyKey };
-
-          result[propertyKey] = applyActions(
-            propertyMetadata,
-            propertyContext,
-            actions
-          );
-
-          return result;
-        },
-        propertiesMetadata
-      ) ?? propertiesMetadata;
+    const result = mapValues(propertiesMetadata, (propertyMetadata, propertyKey) => {
+      const propertyContext: ClassPropertyContext = { ...context, propertyKey };
+      return applyActions(propertyMetadata, propertyContext, actions);
+    });
 
     PropertiesMetadataManager.setMetadata(target, result);
   };
+}
+
+
+export function makePropertiesOptional(...keys: MetadataKey[]): MetadataAction<PropertiesMetadata> {
+  return function (metadata) {
+    return mapValues(metadata, (propertyMeta, propertyKey) => {
+      return {
+        ...propertyMeta,
+        optional: !keys.length || keys.includes(propertyKey)
+      }
+    });
+  }
+}
+
+export function makePropertiesRequired(...keys: MetadataKey[]): MetadataAction<PropertiesMetadata> {
+  return function (metadata) {
+    return mapValues(metadata, (propertyMeta, propertyKey) => {
+      return {
+        ...propertyMeta,
+        optional: !( !keys.length || keys.includes(propertyKey) )
+      }
+    })
+  }
+}
+
+export function omitProperties(...keys: MetadataKey[]): MetadataAction<PropertiesMetadata> {
+  return function (metadata) {
+    return omit(metadata, keys);
+  }
 }

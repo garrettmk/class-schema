@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 /**
- * A constructor function.
- */
-export type Constructor<T = any> = new () => T;
-
-/**
  * A property key.
  */
 export type PropertyKey = string | symbol;

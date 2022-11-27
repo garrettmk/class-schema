@@ -1,8 +1,7 @@
 import { PropertyMetadata } from '../class-schema-types';
 import { getTypeInfo } from './get-type-info';
-import { TypeFn, AnyFunction, InnerType } from './types';
-import { listOf } from './list-of';
-import { flip } from './flip';
+import { TypeFn, InnerType } from './types';
+import { AnyFunction, listOf, flip } from '@garrettmk/ts-utils';
 
 
 export function fakerMaker<T, O = T>(metadata: PropertyMetadata<T | T[], O>, fakerFn: TypeFn<InnerType<O>>): TypeFn<O> {

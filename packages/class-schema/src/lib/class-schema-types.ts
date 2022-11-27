@@ -4,7 +4,8 @@ import { BaseModelConstructor } from './base-model';
 import { FloatConstructor } from './custom-types/float';
 import { Id, IdConstructor } from './custom-types/id';
 import { IntConstructor } from './custom-types/int';
-import { Constructor, InnerType, TypeFn, Values } from './util/types';
+import { InnerType, TypeFn } from './util/types';
+import { Constructor, Values } from '@garrettmk/ts-utils';
 
 //
 // Custom types
@@ -17,16 +18,15 @@ export type Enum = Record<string, string | number>;
 // Class metadata
 //
 
-export enum ObjectType {
-  InputType = 'INPUT_TYPE',
-  ObjectType = 'OBJECT_TYPE',
-  EntityType = 'ENTITY_TYPE',
-}
+export type EntityTypeOptions = true;
+export type InputTypeOptions = true;
+export type OutputTypeOptions = true;
 
 export type ClassMetadata = {
   description?: string
-  pluralName?: string
-  objectTypes?: ObjectType[]
+  input?: InputTypeOptions
+  output?: OutputTypeOptions
+  entity?: EntityTypeOptions
 };
 
 export type ClassContext = {
@@ -42,7 +42,7 @@ export type CommonPropertyMetadata<T = unknown, V = T> = {
     optional?: boolean
     description?: string
     faker?: () => V
-    default?: V | (() => V)
+    default?: () => V
 }
 
 
@@ -123,7 +123,7 @@ export type Constraints<T> =
   T extends IntConstructor[]        ? NumberConstraints & ArrayConstraints :
   T extends FloatConstructor        ? NumberConstraints :
   T extends FloatConstructor[]      ? NumberConstraints & ArrayConstraints :
-  T extends Constructor             ? ObjectConstraints<T> :
+  T extends object                  ? ObjectConstraints<T> :
   never;
 
 export type PropertyMetadata<T = unknown, V = T> =
@@ -151,7 +151,7 @@ export type PropertiesMetadata = {
   [key in PropertyKey]: PropertyMetadata
 };
 
-export type PropertyContext = ClassContext & {
+export type ClassPropertyContext = ClassContext & {
   propertyKey: PropertyKey
 };
 
@@ -161,4 +161,4 @@ export type ClassMetadataAction = MetadataAction<ClassMetadata, ClassContext>;
 
 export const PropertiesMetadataManager = MetadataManagerClass<PropertiesMetadata, Constructor>();
 
-export type ClassPropertyAction = MetadataAction<PropertyMetadata, PropertyContext>;
+export type ClassPropertyAction = MetadataAction<PropertyMetadata, ClassPropertyContext>;

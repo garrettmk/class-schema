@@ -15,25 +15,25 @@ describe('applyActions', () => {
     });
 
     it('should call the action with the given metadata and context', () => {
-        applyActions(metadata, context, actionWithNoReturnValue);
+        applyActions(actionWithNoReturnValue)(metadata, context);
 
         expect(actionWithNoReturnValue).toHaveBeenCalledWith(metadata, context);
     });
 
     it('should return the original metadata if the action returns void', () => {
-        const returnValue = applyActions(metadata, context, actionWithNoReturnValue);
+        const returnValue = applyActions(actionWithNoReturnValue)(metadata, context);
 
         expect(returnValue).toBe(metadata);
     });
 
     it('should return the action\'s return value', () => {
-        const returnValue = applyActions(metadata, context, actionWithReturnValue);
+        const returnValue = applyActions(actionWithReturnValue)(metadata, context);
         
         expect(returnValue).toBe(actionReturnValue);
     });
 
     it('should call each action in a list with the previous action\'s return value', () => {
-        applyActions(metadata, context, actionList);
+        applyActions(actionList)(metadata, context);
 
         expect(actionWithNoReturnValue).toHaveBeenCalledWith(metadata, context);
         expect(actionWithReturnValue).toHaveBeenCalledWith(metadata, context);
@@ -41,7 +41,7 @@ describe('applyActions', () => {
     });
 
     it('should return the final action\'s return value', () => {
-        const returnValue = applyActions(metadata, context, actionList);
+        const returnValue = applyActions(actionList)(metadata, context);
 
         expect(returnValue).toBe(actionReturnValue);
     });

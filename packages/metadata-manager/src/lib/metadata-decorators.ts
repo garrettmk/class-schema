@@ -1,4 +1,5 @@
-import { MetadataDict, MetadataManager, Constructor } from "./types";
+import { MetadataDict, MetadataManager } from "./types";
+import { Constructor } from "@garrettmk/ts-utils";
 
 
 export type PropertyMetadataDecorator<PropertyMetadata> = (meta: PropertyMetadata) => PropertyDecorator;

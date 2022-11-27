@@ -11,8 +11,8 @@ export * from './lib/base-object';
 export * from './lib/base-model';
 
 export * from './lib/util/types';
-export * from './lib/util/list-of';
 export * from './lib/util/logical';
 export * from './lib/util/property-fakers';
 export * from './lib/util/flags';
 export * from './lib/util/get-type-info';
+export * from './lib/util/inner-type';

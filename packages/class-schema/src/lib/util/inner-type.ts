@@ -1,6 +1,8 @@
-import { InnerType } from './types';
+import { InnerType, TypeFn } from './types';
 
-export function innerType<T>(type: T): InnerType<T> {
-  if (Array.isArray(type)) return type[0];
-  else return type as InnerType<T>;
+export function innerType<T>(typeFn: TypeFn<T>): InnerType<T> {
+  const typeValue = typeFn();
+
+  if (Array.isArray(typeValue)) return typeValue[0];
+  else return typeValue as InnerType<T>;
 }
