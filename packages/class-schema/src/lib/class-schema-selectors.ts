@@ -1,5 +1,5 @@
 import { MetadataSelector, MetadataTypeGuard, PropertyContext } from '@garrettmk/metadata-actions';
-import { Constructor } from '@garrettmk/ts-utils';
+import { Constructor, AnyConstructor } from '@garrettmk/ts-utils';
 import { Enum, PropertyMetadata } from './class-schema-types';
 import { getTypeInfo } from './util/get-type-info';
 
@@ -38,7 +38,7 @@ export function typeMatches<Type extends Constructor>(
   };
 }
 
-export function typeExtends<Type extends Constructor>(
+export function typeExtends<Type extends AnyConstructor>(
   type: Type
 ): MetadataTypeGuard<PropertyMetadata, PropertyMetadata<Type>> {
   return function (metadata): metadata is PropertyMetadata<Type> {
@@ -61,7 +61,7 @@ export function innerTypeMatches<Type extends Constructor>(
   };
 }
 
-export function innerTypeExtends<Type extends Constructor>(
+export function innerTypeExtends<Type extends AnyConstructor>(
   type: Type
 ): MetadataTypeGuard<
   PropertyMetadata,

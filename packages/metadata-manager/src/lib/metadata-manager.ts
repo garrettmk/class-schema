@@ -24,7 +24,7 @@ import { getPrototypeChain, merge, Constructor } from '@garrettmk/ts-utils';
  */
 export function MetadataManagerClass<Metadata extends MetadataDict, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
   return class {
-    protected static metadatas = new Map<Target, Metadata>(metadatas);
+    public static metadatas = new Map<Target, Metadata>(metadatas);
 
     public static hasMetadata(target: Target): boolean {
       const targets = [target, ...getPrototypeChain(target)];

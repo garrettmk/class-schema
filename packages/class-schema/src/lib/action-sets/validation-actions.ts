@@ -2,7 +2,8 @@ import { ifMetadata, isSet, MetadataAction } from '@garrettmk/metadata-actions';
 import { Constructor } from '@garrettmk/ts-utils';
 import { Transform, Type } from 'class-transformer';
 import { Equals, IsArray, IsBoolean, IsDate, IsEnum, IsIn, IsInt, IsNotIn, IsNumber, IsOptional, IsString, Matches, Max, MaxDate, MaxLength, Min, MinDate, MinLength, NotEquals } from 'class-validator';
-import { decorateProperty, decoratePropertyWith } from '../class-schema-actions';
+import 'reflect-metadata';
+import { decoratePropertyWith } from '../class-schema-actions';
 import { innerTypeExtends, innerTypeMatches, isArrayField, isConstructorField, isEnumField, isOptionalField } from '../class-schema-selectors';
 import { ClassPropertyContext, PropertyMetadata } from '../class-schema-types';
 import { Id, IsId } from '../custom-types/id';
@@ -13,7 +14,18 @@ import { and, not } from '../util/logical';
 
 export const validationActions: MetadataAction<PropertyMetadata, ClassPropertyContext>[] = [
 
-  ifMetadata(isArrayField, decorateProperty(IsArray())),
+  //
+  // Common
+  //
+
+  ifMetadata(
+    isOptionalField,
+    decoratePropertyWith(() =>
+      IsOptional()
+    )
+  ),
+
+  ifMetadata(isArrayField, decoratePropertyWith(() => IsArray())),
 
   ifMetadata(
     and(
@@ -221,10 +233,6 @@ export const validationActions: MetadataAction<PropertyMetadata, ClassPropertyCo
     })),
   ]),
 
-  //
-  // Common
-  //
 
-  ifMetadata(isOptionalField, decorateProperty(IsOptional())),
 
 ];

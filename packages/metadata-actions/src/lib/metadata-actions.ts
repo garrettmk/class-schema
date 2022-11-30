@@ -2,7 +2,6 @@ import { MaybeArray, Values, ensureArray } from '@garrettmk/ts-utils';
 import { MetadataSelector, MetadataTypeGuard } from './metadata-selectors';
 import { PropertyKey } from './util/types';
 import { entries } from './util/entries';
-import { mapValues } from 'radash';
 
 
 export type MetadataAction<Metadata, Context = unknown> = 
@@ -70,7 +69,6 @@ export function ifMetadata<Metadata, Subtype extends Metadata = Metadata, Contex
     return metadata;
   }
 }
-
 
 export type UpdateMetadataFn<Metadata, Context = unknown> = (metadata: Metadata, context: Context) => Partial<Metadata>
 

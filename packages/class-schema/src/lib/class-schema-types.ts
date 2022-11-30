@@ -1,11 +1,11 @@
 import { MetadataAction } from '@garrettmk/metadata-actions';
-import { MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
+import { MetadataDict, MetadataManagerClass, PropertyKey } from '@garrettmk/metadata-manager';
+import { Constructor, Values } from '@garrettmk/ts-utils';
 import { BaseModelConstructor } from './base-model';
 import { FloatConstructor } from './custom-types/float';
 import { Id, IdConstructor } from './custom-types/id';
 import { IntConstructor } from './custom-types/int';
-import { InnerType, TypeFn } from './util/types';
-import { Constructor, Values } from '@garrettmk/ts-utils';
+import { TypeFn } from './util/types';
 
 //
 // Custom types
@@ -18,18 +18,17 @@ export type Enum = Record<string, string | number>;
 // Class metadata
 //
 
-export type EntityTypeOptions = true;
-export type InputTypeOptions = true;
-export type OutputTypeOptions = true;
 
-export type ClassMetadata = {
+export interface ClassMetadata extends MetadataDict {
   description?: string
-  input?: InputTypeOptions
-  output?: OutputTypeOptions
-  entity?: EntityTypeOptions
+  input?: boolean
+  output?: boolean
+  entity?: boolean
+  abstract?: boolean
+  hidden?: boolean
 };
 
-export type ClassContext = {
+export interface ClassContext {
   target: Constructor
 };
 
@@ -37,38 +36,49 @@ export type ClassContext = {
 // Property types
 //
 
-export type CommonPropertyMetadata<T = unknown, V = T> = {
+export interface CommonPropertyMetadata<T = unknown, V = T> {
     type: TypeFn<T>
     optional?: boolean
     description?: string
     faker?: () => V
     default?: () => V
+    hidden?: boolean
 }
 
 
-export type ScalarPropertyMetadata = {
+export interface ScalarPropertyMetadata {
     unique?: boolean
 }
 
-export type IdPropertyMetadata = ScalarPropertyMetadata & {
+export interface IdPropertyMetadata extends ScalarPropertyMetadata {
   primaryKey?: boolean
 }
 
-export type ArrayPropertyMetadata = {
+export interface ArrayPropertyMetadata {
   nullableItems?: boolean
 }
 
-export type ArrayConstraints = {
+export interface ScalarRelationMetadata {
+  oneToOne?: boolean
+  manyToOne?: boolean
+}
+
+export interface ArrayRelationMetadata {
+  oneToMany?: boolean
+  manyToMany?: boolean
+}
+
+export interface ArrayConstraints {
     minItems?: number
     maxItems?: number
 }
 
-export type BooleanConstraints = {
+export interface BooleanConstraints {
   eq?: boolean
   ne?: boolean
 }
 
-export type StringConstraints = {
+export interface StringConstraints {
     matches?: RegExp
     minLength?: number
     maxLength?: number
@@ -76,7 +86,7 @@ export type StringConstraints = {
     nin?: string[]
 }
 
-export type NumberConstraints = {
+export interface NumberConstraints {
     min?: number
     max?: number
     eq?: number
@@ -85,19 +95,19 @@ export type NumberConstraints = {
     nin?: number[]
 }
 
-export type DateConstraints = {
+export interface DateConstraints {
   min?: Date
   max?: Date
 }
 
-export type IdConstraints = {
+export interface IdConstraints {
   eq?: Id
   ne?: Id
   in?: Id[]
   nin?: Id[]
 }
 
-export type EnumConstraints<T extends Enum = Enum> = {
+export interface EnumConstraints<T extends Enum = Enum> {
   in?: Values<T>[]
   nin?: Values<T>[]
 }
@@ -105,6 +115,7 @@ export type EnumConstraints<T extends Enum = Enum> = {
 export type ObjectConstraints<T extends object, Keys extends keyof T = keyof T> = {
   [k in Keys]?: Constraints<T[k]>
 }
+
 
 export type Constraints<T> =
   T extends StringConstructor       ? StringConstraints :
@@ -143,7 +154,8 @@ export type PropertyMetadata<T = unknown, V = T> =
   T extends IntConstructor[] ?        CommonPropertyMetadata<IntConstructor[], number[]>          & ArrayPropertyMetadata     & Constraints<IntConstructor[]> :
   T extends FloatConstructor ?        CommonPropertyMetadata<FloatConstructor, number>            & ScalarPropertyMetadata    & Constraints<FloatConstructor> :
   T extends FloatConstructor[] ?      CommonPropertyMetadata<FloatConstructor[], number[]>        & ArrayPropertyMetadata     & Constraints<FloatConstructor[]> :
-  T extends BaseModelConstructor ?    CommonPropertyMetadata<T> :
+  T extends BaseModelConstructor ?    CommonPropertyMetadata<T>                                   & ScalarRelationMetadata :
+  T extends BaseModelConstructor[] ?  CommonPropertyMetadata<T>                                   & ArrayRelationMetadata :
   CommonPropertyMetadata<T, V>;
 
 
@@ -151,14 +163,18 @@ export type PropertiesMetadata = {
   [key in PropertyKey]: PropertyMetadata
 };
 
-export type ClassPropertyContext = ClassContext & {
+export type ClassPropertiesContext = ClassContext;
+
+export interface ClassPropertyContext extends ClassPropertiesContext {
   propertyKey: PropertyKey
 };
 
 export const ClassMetadataManager = MetadataManagerClass<ClassMetadata, Constructor>();
 
-export type ClassMetadataAction = MetadataAction<ClassMetadata, ClassContext>;
-
 export const PropertiesMetadataManager = MetadataManagerClass<PropertiesMetadata, Constructor>();
 
-export type ClassPropertyAction = MetadataAction<PropertyMetadata, ClassPropertyContext>;
+export type ClassMetadataAction = MetadataAction<ClassMetadata, ClassContext>;
+
+export type PropertiesMetadataAction = MetadataAction<PropertiesMetadata, ClassPropertiesContext>;
+
+export type PropertyMetadataAction = MetadataAction<PropertyMetadata, ClassPropertyContext>;

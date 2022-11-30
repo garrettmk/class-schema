@@ -21,6 +21,7 @@ export type MetadataDict<MetadataField = unknown> = Record<MetadataKey, Metadata
  * A metadata manager class.
  */
 export interface MetadataManager<Metadata = MetadataDict, Target = unknown> {
+    metadatas: Map<Target, Metadata>
     hasMetadata(target: Target): boolean
     getMetadata(target: Target): Metadata
     setMetadata(target: Target, meta: Metadata): void
