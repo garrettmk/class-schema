@@ -1,3 +1,4 @@
-export * from './lib/metadata-actions';
-export * from './lib/metadata-selectors';
-export * from './lib/util/entries';
+export * from './lib/types';
+export * from './lib/actions';
+export * from './lib/selectors';
+export * from './lib/apply-actions';

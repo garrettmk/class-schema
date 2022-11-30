@@ -1,13 +1,15 @@
-import { applyActions, ifMetadata, updateMetadata } from '../lib/metadata-actions';
+import { apply, breakAction, ifMetadata, updateMetadata } from '../lib/actions';
 
-describe('applyActions', () => {
+describe('apply', () => {
     const actionWithNoReturnValue = jest.fn();
     const actionWithReturnValue = jest.fn();
     const actionFollowingReturnValue = jest.fn();
+    const actionFollowingBreak = jest.fn();
     const actionReturnValue = {};
     const metadata = {};
     const context = {};
     const actionList = [actionWithNoReturnValue, actionWithReturnValue, actionFollowingReturnValue];
+    const actionListWithBreak = [actionWithNoReturnValue, actionWithReturnValue, breakAction, actionFollowingBreak];
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -15,25 +17,25 @@ describe('applyActions', () => {
     });
 
     it('should call the action with the given metadata and context', () => {
-        applyActions(actionWithNoReturnValue)(metadata, context);
+        apply(actionWithNoReturnValue)(metadata, context);
 
         expect(actionWithNoReturnValue).toHaveBeenCalledWith(metadata, context);
     });
 
     it('should return the original metadata if the action returns void', () => {
-        const returnValue = applyActions(actionWithNoReturnValue)(metadata, context);
+        const returnValue = apply(actionWithNoReturnValue)(metadata, context);
 
         expect(returnValue).toBe(metadata);
     });
 
     it('should return the action\'s return value', () => {
-        const returnValue = applyActions(actionWithReturnValue)(metadata, context);
+        const returnValue = apply(actionWithReturnValue)(metadata, context);
         
         expect(returnValue).toBe(actionReturnValue);
     });
 
     it('should call each action in a list with the previous action\'s return value', () => {
-        applyActions(actionList)(metadata, context);
+        apply(actionList)(metadata, context);
 
         expect(actionWithNoReturnValue).toHaveBeenCalledWith(metadata, context);
         expect(actionWithReturnValue).toHaveBeenCalledWith(metadata, context);
@@ -41,9 +43,16 @@ describe('applyActions', () => {
     });
 
     it('should return the final action\'s return value', () => {
-        const returnValue = applyActions(actionList)(metadata, context);
+        const returnValue = apply(actionList)(metadata, context);
 
         expect(returnValue).toBe(actionReturnValue);
+    });
+
+    it('should immediately return if an action throws a Break', () => {
+        const returnValue = apply(actionListWithBreak)(metadata, context);
+
+        expect(returnValue).toBe(actionReturnValue);
+        expect(actionFollowingBreak).not.toHaveBeenCalled();
     });
 });
 
