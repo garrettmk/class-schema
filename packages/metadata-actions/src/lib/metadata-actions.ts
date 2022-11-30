@@ -2,10 +2,10 @@ import { MaybeArray, Values, ensureArray } from '@garrettmk/ts-utils';
 import { MetadataSelector, MetadataTypeGuard } from './metadata-selectors';
 import { PropertyKey } from './util/types';
 import { entries } from './util/entries';
+import { MetadataAction } from './metadata-selectors';
 
 
-export type MetadataAction<Metadata, Context = unknown> = 
-  (metadata: Metadata, context: Context) => Metadata | void;
+
 
 export function applyActions<Metadata, Context = unknown>(actions: MaybeArray<MetadataAction<Metadata, Context>>): MetadataAction<Metadata, Context>;
 export function applyActions<Metadata, Context = unknown>(metadata: Metadata, context: Context, actions: MaybeArray<MetadataAction<Metadata, Context>>): Metadata;

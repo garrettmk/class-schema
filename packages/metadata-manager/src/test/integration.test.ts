@@ -1,5 +1,6 @@
+import { Constructor } from '@garrettmk/ts-utils';
 import { MetadataManagerClass } from '../lib/metadata-manager';
-import { PropertyMetadataDecoratorFn } from '../lib/metadata-decorators';
+import { propertyDecoratorFn } from '../lib/util/property-decorator-fn';
 
 type TestMetaField = {
   nullable?: boolean;
@@ -7,14 +8,12 @@ type TestMetaField = {
 
 type TestMeta = Record<string | symbol, TestMetaField>;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type MetaTarget = Object | Function;
 
 describe('Integration', () => {
-  class Manager extends MetadataManagerClass<TestMeta, MetaTarget>() {}
-  class OtherManager extends MetadataManagerClass<TestMeta, MetaTarget>() {}
-  const Field = PropertyMetadataDecoratorFn(Manager);
-  const OtherField = PropertyMetadataDecoratorFn(OtherManager);
+  class Manager extends MetadataManagerClass<TestMeta, Constructor>() {}
+  class OtherManager extends MetadataManagerClass<TestMeta, Constructor>() {}
+  const Field = propertyDecoratorFn(Manager);
+  const OtherField = propertyDecoratorFn(OtherManager);
 
   class TestClass {
     @OtherField({ nullable: true })
@@ -24,6 +23,6 @@ describe('Integration', () => {
 
   it('should have metadata', () => {
     // const meta = Manager.getOwnMeta(TestClass);
-    expect(Manager.hasMetadata(TestClass.prototype)).toBeTruthy();
+    expect(Manager.hasMetadata(TestClass)).toBeTruthy();
   });
 });

@@ -1,6 +1,5 @@
 import { BaseObject } from "../../lib/base-object";
 import { Class, Property } from "../../lib/class-schema-decorators";
-import { Id } from "../../lib/custom-types/id";
 
 describe('validation-actions', () => {
     describe('id fields', () => {

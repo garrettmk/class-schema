@@ -24,6 +24,9 @@ import { getPrototypeChain, merge, Constructor } from '@garrettmk/ts-utils';
  */
 export function MetadataManagerClass<Metadata extends MetadataDict, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
   return class {
+    /**
+     * Maps a `Target` to a `Metadata`
+     */
     public static metadatas = new Map<Target, Metadata>(metadatas);
 
     public static hasMetadata(target: Target): boolean {
@@ -31,6 +34,12 @@ export function MetadataManagerClass<Metadata extends MetadataDict, Target>(meta
       return targets.some(t => this.metadatas.has(t));
     }
 
+    /**
+     * Returns the target's metadata, or throws an error.
+     *
+     * @param target
+     * @returns The `Metadata` assigned to `target`
+     */
     public static getMetadata(target: Target): Metadata {
       const targets = [target, ...getPrototypeChain(target)];
 
@@ -45,15 +54,32 @@ export function MetadataManagerClass<Metadata extends MetadataDict, Target>(meta
       return resolvedMeta;
     }
 
+    /**
+     * Assigns `meta` to `target`.
+     *
+     * @param target
+     * @param meta
+     */
     public static setMetadata(target: Target, meta: Metadata): void {
       this.metadatas.set(target, meta);
     }
 
+    /**
+     * Merges `meta` with the target's current metadata.
+     *
+     * @param target
+     * @param meta
+     */
     public static mergeMetadata(target: Target, meta: Metadata): void {
       const current = this.metadatas.get(target);
       this.metadatas.set(target, { ...current, ...meta });
     }
 
+    /**
+     * Returns all targets and their assigned metadata.
+     *
+     * @returns An array of `[Target, Metadata]` tuples
+     */
     public static entries(): [Target, Metadata][] {
       return Array.from(this.metadatas.keys())
         .map(target => [target, this.getMetadata(target)]);

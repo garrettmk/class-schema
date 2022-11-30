@@ -1,4 +1,7 @@
 {
   "name": "@garrettmk/metadata-actions",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "@garrettmk/metadata-manager": "^0.0.1"
+  }
 }

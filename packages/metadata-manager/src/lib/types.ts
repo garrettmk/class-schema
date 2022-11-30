@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /**
  * A property key.
  */
@@ -10,12 +8,15 @@ export type PropertyKey = string | symbol;
  */
 export type MetadataKey = string | symbol;
 
+/**
+ * All string and symbol keys of `T"
+ */
 export type MetadataKeys<T extends object, K extends keyof T = keyof T> = K extends MetadataKey ? K : never;
 
 /**
  * A metadata dictionary.
  */
-export type MetadataDict<MetadataField = unknown> = Record<MetadataKey, MetadataField>;
+export type MetadataDict<Property = unknown, Key extends MetadataKey = MetadataKey> = Record<Key, Property>;
 
 /**
  * A metadata manager class.
