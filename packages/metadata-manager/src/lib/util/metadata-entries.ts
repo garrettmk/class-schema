@@ -1,5 +1,4 @@
-import { Values } from "@garrettmk/ts-utils";
-import { MetadataDict } from "../types";
+import { MetadataKeys, MetadataValues } from "../types";
 import { metadataKeys } from "./metadata-keys";
 
 /**
@@ -8,7 +7,7 @@ import { metadataKeys } from "./metadata-keys";
  * @param metadata The `Metadata` object to parse
  * @returns An array of [MetadataKey, Values<Metadata>] entries.
  */
-export function metadataEntries<Metadata extends MetadataDict>(metadata: Metadata): [keyof Metadata, Values<Metadata>][] {
+export function metadataEntries<Metadata extends object>(metadata: Metadata): [MetadataKeys<Metadata>, MetadataValues<Metadata>][] {
     const keys = metadataKeys(metadata);
     
     return keys.map(key => [key, metadata[key]]);

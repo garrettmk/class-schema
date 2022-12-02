@@ -1,5 +1,5 @@
 import { applyActions, applyActionsToProperties } from '@garrettmk/metadata-actions';
-import { ClassMetadataDecoratorFn, PropertyMetadataDecoratorFn } from '@garrettmk/metadata-manager';
+import { classDecoratorFn, propertyDecoratorFn } from '@garrettmk/metadata-manager';
 import { Constructor } from '@garrettmk/ts-utils';
 import { baseObjectActions } from './action-sets/base-object-actions';
 import { validationActions } from './action-sets/validation-actions';
@@ -7,9 +7,9 @@ import { applyActionsToPropertyMetadata } from './class-schema-actions';
 import { ClassContext, ClassMetadata, ClassMetadataManager, PropertiesMetadataManager, PropertyMetadata } from './class-schema-types';
 import { TypeFn } from './util/types';
 
-export const ClassMeta = ClassMetadataDecoratorFn(ClassMetadataManager);
+export const ClassMeta = classDecoratorFn(ClassMetadataManager);
 
-export const PropertyMeta = PropertyMetadataDecoratorFn(PropertiesMetadataManager);
+export const PropertyMeta = propertyDecoratorFn(PropertiesMetadataManager);
 
 export function Property<T>(type: TypeFn<T>, meta?: Omit<PropertyMetadata<T>, 'type'>): PropertyDecorator {
   return PropertyMeta({ type, ...meta });

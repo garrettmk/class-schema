@@ -1,5 +1,5 @@
-import { MaybeArray, Values } from "@garrettmk/ts-utils";
-import { MetadataDict } from "dist/packages/metadata-manager";
+import { MaybeArray } from "@garrettmk/ts-utils";
+import { MetadataValues } from "dist/packages/metadata-manager";
 import { apply, applyToProperties } from "./actions";
 import { MetadataAction, PropertyContext } from "./types";
 
@@ -25,6 +25,6 @@ export function applyActions<Metadata, Context>(metadata: Metadata, context: Con
  * @param actions Actions to apply to each property of the `metadata` object
  * @returns A new `Metadata` object
  */
-export function applyActionsToProperties<Metadata extends MetadataDict, Context>(metadata: Metadata, context: Context, actions: MaybeArray<MetadataAction<Values<Metadata>, Context & PropertyContext>>): Metadata {
+export function applyActionsToProperties<Metadata extends object, Context>(metadata: Metadata, context: Context, actions: MaybeArray<MetadataAction<MetadataValues<Metadata>, Context & PropertyContext>>): Metadata {
     return applyToProperties(actions)(metadata, context) ?? metadata;
 }

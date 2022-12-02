@@ -1,10 +1,13 @@
-import { mapMetadataProperties, MetadataDict, MetadataKey } from '@garrettmk/metadata-manager';
-import { ensureArray, MaybeArray, Values } from '@garrettmk/ts-utils';
-import type { MetadataAction } from './types';
+import { mapMetadataProperties, MetadataKey, MetadataValues } from '@garrettmk/metadata-manager';
+import { ensureArray, MaybeArray } from '@garrettmk/ts-utils';
+import { applyActions } from './apply-actions';
+import type { MetadataAction, MetadataTransform } from './types';
 import { MetadataSelector, MetadataTypeGuard, PropertyContext } from './types';
 
 
-export class Break {}
+export class Break<Metadata = unknown> {
+    constructor(public metadata?: Metadata) {}
+}
 
 
 /**
@@ -12,7 +15,7 @@ export class Break {}
  * @returns A `MetadataAction` that applies the given actions to the metadata
  *          and returns the result.
  */
-export function apply<Metadata, Context>(
+export function apply<Metadata, Context = unknown>(
     actions: MaybeArray<MetadataAction<Metadata, Context>>
 ): MetadataAction<Metadata, Context> {
     return function (metadata, context) {
@@ -22,12 +25,14 @@ export function apply<Metadata, Context>(
             try {
                 result = action(result, context) ?? result;
             } catch (errorOrBreak) {
-                if (errorOrBreak instanceof Break)
+                if (errorOrBreak instanceof Break) {
+                    result = errorOrBreak.metadata ?? result;
                     break;
-                else
+                } else {
                     throw errorOrBreak;
+                }
             }
-        }
+        }   
 
         return result;
     }
@@ -40,8 +45,8 @@ export function apply<Metadata, Context>(
  * @returns A `MetadataAction` that applies the given actions to each property
  *          in the metadata and returns the result.
  */
-export function applyToProperties<Metadata extends MetadataDict, Context>(
-    actions: MaybeArray<MetadataAction<Values<Metadata>, Context & PropertyContext>>
+export function applyToProperties<Metadata extends object, Context>(
+    actions: MaybeArray<MetadataAction<MetadataValues<Metadata>, Context & PropertyContext>>
 ): MetadataAction<Metadata, Context> {
     return (metadata: Metadata, context: Context) =>
         mapMetadataProperties(metadata, (propertyMeta, propertyKey) => {
@@ -93,6 +98,35 @@ export function ifMetadata<Metadata, Subtype extends Metadata = Metadata, Contex
 }
 
 /**
+ * Applies the given actions if the selector/type guard returns true.
+ *
+ * @param typeGuard
+ * @param thenActions
+ * @param elseActions
+ */
+ export function option<Metadata, Subtype extends Metadata = Metadata, Context = unknown>(
+    typeGuard: MetadataTypeGuard<Metadata, Subtype, Context>,
+    thenActions: MaybeArray<MetadataAction<Subtype, Context>>,
+): MetadataAction<Metadata, Context>;
+export function option<Metadata, Context = unknown>(
+    selector: MetadataSelector<Metadata, Context>,
+    thenActions: MaybeArray<MetadataAction<Metadata, Context>>,
+): MetadataAction<Metadata, Context>;
+export function option<Metadata, Subtype extends Metadata = Metadata, Context = unknown>(
+    selectorOrTypeGuard:
+        | MetadataSelector<Metadata, Context>
+        | MetadataTypeGuard<Metadata, Subtype, Context>,
+    thenActions: MaybeArray<MetadataAction<Subtype, Context>>,
+): MetadataAction<Metadata, Context> {
+    return function (metadata, context) {
+        if (selectorOrTypeGuard(metadata, context)) {
+          const result = apply(thenActions)(metadata, context);
+          throw new Break(result);
+        }
+    };
+}
+
+/**
  * Returns an partial `Metadata`
  */
 export type UpdateMetadataFn<Metadata, Context = unknown> = (
@@ -114,4 +148,14 @@ export function updateMetadata<Metadata, Context = unknown>(
 
         return { ...metadata, ...update };
     };
+}
+
+/**
+ * Transforms `metadata` to a new type
+ */
+export function transformMetadata<Metadata, NewType, Context = unknown>(transform: MetadataTransform<Metadata, NewType, Context>, thenActions: MaybeArray<MetadataAction<NewType, Context>>): MetadataAction<Metadata, Context> {
+    return function (metadata, context) {
+        const transformedMetadata = transform(metadata, context);
+        applyActions(transformedMetadata, context, thenActions);
+    }
 }

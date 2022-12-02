@@ -1,7 +1,9 @@
 import { MetadataSelector, MetadataTypeGuard, PropertyContext } from '@garrettmk/metadata-actions';
 import { Constructor, AnyConstructor } from '@garrettmk/ts-utils';
 import { Enum, PropertyMetadata } from './class-schema-types';
+import { Id } from './custom-types/id';
 import { getTypeInfo } from './util/get-type-info';
+import { BuiltIn } from './util/types';
 
 export function isOptionalField(
   metadata: PropertyMetadata
@@ -16,7 +18,8 @@ export function isArrayField(
 }
 
 export function isConstructorField(
-  metadata: PropertyMetadata
+  metadata: PropertyMetadata,
+  context: void
 ): metadata is PropertyMetadata<Constructor> {
   const { innerType } = getTypeInfo(metadata.type);
   return (
@@ -27,6 +30,17 @@ export function isConstructorField(
 export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMetadata<Enum> {
   const { innerType } = getTypeInfo(metadata.type);
   return typeof innerType === 'object';
+}
+
+export function isBuiltInField(metadata: PropertyMetadata, context: void): metadata is PropertyMetadata<BuiltIn> {
+  const { innerType } = getTypeInfo(metadata.type);
+  const builtIns: unknown[] = [String, Number, Boolean, Date];
+
+  return builtIns.includes(innerType);
+}
+
+export function isPrimaryKeyField(metadata: PropertyMetadata): metadata is PropertyMetadata<Id> {
+  return 'primaryKey' in metadata;
 }
 
 
@@ -40,7 +54,7 @@ export function typeMatches<Type extends Constructor>(
 
 export function typeExtends<Type extends AnyConstructor>(
   type: Type
-): MetadataTypeGuard<PropertyMetadata, PropertyMetadata<Type>> {
+): MetadataTypeGuard<PropertyMetadata, PropertyMetadata<Type>, void> {
   return function (metadata): metadata is PropertyMetadata<Type> {
     const fieldType = getTypeInfo(metadata.type).type as Constructor;
 

@@ -21,10 +21,10 @@ export type MetadataTypeGuard<Metadata, Subtype extends Metadata, Context = unkn
  * Execute some action for a given metadata/context. Can modify the metadata
  * by returning a new value.
  */
-export type MetadataAction<Metadata, Context = unknown> = (
+export type MetadataAction<Metadata, Context = unknown, Output = Metadata> = (
     metadata: Metadata,
     context: Context
-) => Metadata | void;
+) => Output | void;
 
 /**
  * Additional context used by `applyToProperties`
@@ -32,3 +32,11 @@ export type MetadataAction<Metadata, Context = unknown> = (
 export type PropertyContext = {
     propertyKey: MetadataKey;
 };
+
+/**
+ * Similar to MetadataAction, but returns a new type
+ */
+export type MetadataTransform<Metadata, NewType, Context = unknown> = (
+    metadata: Metadata,
+    context: Context
+) => NewType

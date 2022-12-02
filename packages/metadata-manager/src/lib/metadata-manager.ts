@@ -22,7 +22,7 @@ import { getPrototypeChain, merge, Constructor } from '@garrettmk/ts-utils';
  * }
  * ```
  */
-export function MetadataManagerClass<Metadata extends MetadataDict, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
+export function MetadataManagerClass<Metadata extends object, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
   return class {
     /**
      * Maps a `Target` to a `Metadata`

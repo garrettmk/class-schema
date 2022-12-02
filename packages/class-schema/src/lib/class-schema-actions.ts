@@ -1,4 +1,4 @@
-import { applyActions, MetadataAction } from '@garrettmk/metadata-actions';
+import { applyActions, applyActionsToProperties, MetadataAction } from '@garrettmk/metadata-actions';
 import { ensureArray, MaybeArray } from '@garrettmk/ts-utils';
 import { mapValues, omit, pick } from 'radash';
 import { ClassContext, ClassMetadata, PropertyMetadataAction, ClassPropertyContext, PropertiesMetadata, PropertiesMetadataManager, PropertyMetadata } from './class-schema-types';
@@ -47,11 +47,7 @@ export function applyActionsToPropertyMetadata(
     const { target } = context;
     const propertiesMetadata = PropertiesMetadataManager.getMetadata(target);
 
-    const result = mapValues(propertiesMetadata, (propertyMetadata, propertyKey) => {
-      const propertyContext: ClassPropertyContext = { ...context, propertyKey };
-      return applyActions(propertyMetadata, propertyContext, actions);
-    });
-
+    const result = applyActionsToProperties(propertiesMetadata, context, actions);
     PropertiesMetadataManager.setMetadata(target, result);
   };
 }
