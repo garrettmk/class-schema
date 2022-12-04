@@ -153,9 +153,19 @@ export function updateMetadata<Metadata, Context = unknown>(
 /**
  * Transforms `metadata` to a new type
  */
-export function transformMetadata<Metadata, NewType, Context = unknown>(transform: MetadataTransform<Metadata, NewType, Context>, thenActions: MaybeArray<MetadataAction<NewType, Context>>): MetadataAction<Metadata, Context> {
+export function transformMetadata<Metadata, NewType, Context = unknown>(transform: MetadataTransform<Metadata, Context, NewType>, thenActions: MaybeArray<MetadataAction<NewType, Context>>): MetadataAction<Metadata, Context> {
     return function (metadata, context) {
-        const transformedMetadata = transform(metadata, context);
-        applyActions(transformedMetadata, context, thenActions);
+        const newMetadata = transform(metadata, context);
+        applyActions(newMetadata, context, thenActions);
+    }
+}
+
+/**
+ * Updates the `context` to a new value/type.
+ */
+export function transformContext<Metadata, Context, NewType>(transform: MetadataTransform<Metadata, Context, NewType>, thenActions: MaybeArray<MetadataAction<Metadata, NewType>>): MetadataAction<Metadata, Context> {
+    return function (metadata, context) {
+        const newContext = transform(metadata, context);
+        applyActions(metadata, newContext, thenActions);
     }
 }

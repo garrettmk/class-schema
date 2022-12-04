@@ -1,22 +1,17 @@
-import { MetadataAction } from "@garrettmk/metadata-actions";
 import { Constructor } from "@garrettmk/ts-utils";
 import { transformAndValidate, transformAndValidateSync } from "class-transformer-validator";
 import { mapValues, shake } from "radash";
-import { ClassMetadata, ClassMetadataManager, ClassPropertyContext, PropertiesMetadata, PropertiesMetadataManager, PropertyMetadata } from "./class-schema-types";
+import { ClassMetadata, ClassMetadataManager } from "./class-metadata/class-metadata-manager";
+import { PropertiesMetadata, PropertiesMetadataManager } from "./properties-metadata/properties-metadata-manager";
 
 
 export type CreateClassOptions = {
   name?: string
   classMetadata?: ClassMetadata
   propertiesMetadata?: PropertiesMetadata
-  propertyMetadataActions?: MetadataAction<PropertyMetadata, ClassPropertyContext>[]
 }
 
 export abstract class BaseObject {
-  static getSchema<T extends BaseObject>(this: Constructor<T>) {
-    return PropertiesMetadataManager.getMetadata(this);
-  }
-
   static async from<T extends BaseObject>(this: Constructor<T>, data: T): Promise<T> {
     return transformAndValidate(this, data);
   }

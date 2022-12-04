@@ -36,7 +36,7 @@ export type PropertyContext = {
 /**
  * Similar to MetadataAction, but returns a new type
  */
-export type MetadataTransform<Metadata, NewType, Context = unknown> = (
+export type MetadataTransform<Metadata, Context, NewType> = (
     metadata: Metadata,
     context: Context
 ) => NewType

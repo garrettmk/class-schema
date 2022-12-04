@@ -1,9 +1,10 @@
 import { MetadataSelector, MetadataTypeGuard, PropertyContext } from '@garrettmk/metadata-actions';
-import { Constructor, AnyConstructor } from '@garrettmk/ts-utils';
-import { Enum, PropertyMetadata } from './class-schema-types';
-import { Id } from './custom-types/id';
-import { getTypeInfo } from './util/get-type-info';
-import { BuiltIn } from './util/types';
+import { AnyConstructor, Constructor, doesExtend } from '@garrettmk/ts-utils';
+import { Id } from '../custom-types/id';
+import { getTypeInfo } from '../util/get-type-info';
+import { BuiltInConstructor, Enum } from '../util/types';
+import { PropertyMetadata } from './property-metadata-types';
+
 
 export function isOptionalField(
   metadata: PropertyMetadata
@@ -11,11 +12,13 @@ export function isOptionalField(
   return Boolean(metadata.optional);
 }
 
+
 export function isArrayField(
   metadata: PropertyMetadata
 ): metadata is PropertyMetadata<unknown[]> {
   return getTypeInfo(metadata.type).isArray;
 }
+
 
 export function isConstructorField(
   metadata: PropertyMetadata,
@@ -32,15 +35,15 @@ export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMet
   return typeof innerType === 'object';
 }
 
-export function isBuiltInField(metadata: PropertyMetadata, context: void): metadata is PropertyMetadata<BuiltIn> {
+export function isBuiltInField<Context>(metadata: PropertyMetadata, context: Context): metadata is PropertyMetadata<StringConstructor> {
   const { innerType } = getTypeInfo(metadata.type);
   const builtIns: unknown[] = [String, Number, Boolean, Date];
 
   return builtIns.includes(innerType);
 }
 
-export function isPrimaryKeyField(metadata: PropertyMetadata): metadata is PropertyMetadata<Id> {
-  return 'primaryKey' in metadata;
+export function isPrimaryKeyField<Context>(metadata: PropertyMetadata, context: Context): metadata is PropertyMetadata<Id> {
+  return 'primaryKey' in metadata && !!metadata['primaryKey'];
 }
 
 

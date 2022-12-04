@@ -1,6 +1,17 @@
-import { shake } from 'radash';
-import { MetadataDict, MetadataManager } from './types';
-import { getPrototypeChain, merge, Constructor } from '@garrettmk/ts-utils';
+import { Constructor, getPrototypeChain } from '@garrettmk/ts-utils';
+
+/**
+ * A metadata manager class.
+ */
+export interface MetadataManager<Metadata, Target = unknown> {
+  metadatas: Map<Target, Metadata>;
+  hasMetadata: (target: Target) => boolean;
+  getMetadata: (target: Target) => Metadata;
+  setMetadata: (target: Target, meta: Metadata) => void;
+  updateMetadata: (target: Target, callback: (metadata?: Metadata) => Metadata) => void;
+  entries: () => [Target, Metadata][];
+}
+
 
 /**
  * Creates a new class implementing the `MetadataManager` interface. All
@@ -30,8 +41,7 @@ export function MetadataManagerClass<Metadata extends object, Target>(metadatas?
     public static metadatas = new Map<Target, Metadata>(metadatas);
 
     public static hasMetadata(target: Target): boolean {
-      const targets = [target, ...getPrototypeChain(target)];
-      return targets.some(t => this.metadatas.has(t));
+      return this.metadatas.has(target);
     }
 
     /**
@@ -41,17 +51,12 @@ export function MetadataManagerClass<Metadata extends object, Target>(metadatas?
      * @returns The `Metadata` assigned to `target`
      */
     public static getMetadata(target: Target): Metadata {
-      const targets = [target, ...getPrototypeChain(target)];
+      const metadata = this.metadatas.get(target);
 
-      const resolvedMeta = targets
-        .reverse()
-        .map(t => this.metadatas.get(t))
-        .reduce((m1, m2) => shake(merge(m1, m2)) as Metadata);
-
-      if (!resolvedMeta)
+      if (!metadata)
         throw new Error(`No metadata for target: ${target}`);
 
-      return resolvedMeta;
+      return metadata;
     }
 
     /**
@@ -65,14 +70,17 @@ export function MetadataManagerClass<Metadata extends object, Target>(metadatas?
     }
 
     /**
-     * Merges `meta` with the target's current metadata.
-     *
+     * Assigns the result of `callback` to `target`.
+     * 
      * @param target
-     * @param meta
+     * @param callback
      */
-    public static mergeMetadata(target: Target, meta: Metadata): void {
-      const current = this.metadatas.get(target);
-      this.metadatas.set(target, { ...current, ...meta });
+    public static updateMetadata(target: Target, callback: (metadata?: Metadata) => Metadata): void {
+      const result = this.hasMetadata(target)
+        ? callback(this.getMetadata(target))
+        : callback();
+
+      this.setMetadata(target, result);
     }
 
     /**

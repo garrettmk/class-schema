@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { registerDecorator, ValidationOptions } from "class-validator";
-import { PropertyKey } from "dist/packages/metadata-manager";
+import { PropertyKey } from "@garrettmk/metadata-manager";
 import { random } from 'radash';
 
 

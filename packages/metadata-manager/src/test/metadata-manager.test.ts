@@ -1,19 +1,19 @@
-import { MetadataManagerClass } from "../lib/metadata-manager";
-import { MetadataDict, MetadataManager } from "../lib/types";
+import { Constructor } from "@garrettmk/ts-utils";
+import { MetadataManagerClass, MetadataManager } from "../lib/metadata-manager";
 
 describe('MetadataManagerClass', () => {
-  let TestMetadataManager: MetadataManager;
+  let TestMetadataManager: MetadataManager<any>;
   class TestTargetOne {}
   class TestChildOne extends TestTargetOne {}
   class TestChildTwo extends TestTargetOne {}
   class TestTargetThree {}
 
-  const targetOneMeta: MetadataDict = { a: 1, b: 2 };
-  const childOneMeta: MetadataDict = { b: 3, c: 4 };
-  const targetThreeMeta: MetadataDict = {};
+  const targetOneMeta = { a: 1, b: 2 };
+  const childOneMeta = { b: 3, c: 4 };
+  const targetThreeMeta = {};
 
   beforeEach(() => {
-    TestMetadataManager = MetadataManagerClass([
+    TestMetadataManager = MetadataManagerClass<any, Constructor>([
         [TestTargetOne, targetOneMeta],
         [TestChildOne, childOneMeta]
     ]);
@@ -28,10 +28,6 @@ describe('MetadataManagerClass', () => {
     it('should return true if metadata has been set for the target', () => {
       expect(TestMetadataManager.hasMetadata(TestTargetOne)).toBe(true);
     });
-
-    it('should return true if metadata has been set for a target\'s ancestor', () => {
-      expect(TestMetadataManager.hasMetadata(TestChildTwo)).toBe(true);
-    });
   });
 
 
@@ -45,12 +41,6 @@ describe('MetadataManagerClass', () => {
     it('should return the target\'s metadata', () => {
         expect(TestMetadataManager.getMetadata(TestTargetOne)).toBe(targetOneMeta);
     });
-
-    it('should merge the inherited metadata', () => {
-        const expected = { ...targetOneMeta, ...childOneMeta };
-
-        expect(TestMetadataManager.getMetadata(TestChildOne)).toMatchObject(expected);
-    });
   });
 
 
@@ -60,18 +50,6 @@ describe('MetadataManagerClass', () => {
         const meta = TestMetadataManager.getMetadata(TestTargetThree);
 
         expect(meta).toMatchObject(targetThreeMeta);
-    });
-  });
-
-
-  describe('mergeMetadata', () => {
-    it('should save the merged metadata', () => {
-        const newMeta = { c: 4 };
-        const expected = { ...targetOneMeta, ...newMeta };
-    
-        TestMetadataManager.mergeMetadata(TestTargetOne, newMeta);
-    
-        expect(TestMetadataManager.getMetadata(TestTargetOne)).toMatchObject(expected);
     });
   });
 

@@ -1,3 +1,6 @@
+import type { EnumObject } from "@garrettmk/ts-utils";
+
+export { EnumObject as Enum };
 
 export type TypeFn<T = unknown> = () => T;
 
@@ -7,5 +10,6 @@ export type TargetContext<Target = unknown> = {
   target: Target;
 };
 
+export type BuiltIn = string | number | boolean | Date;
 
-export type BuiltIn = StringConstructor | NumberConstructor | BooleanConstructor | Date;
+export type BuiltInConstructor = StringConstructor | NumberConstructor | BooleanConstructor | DateConstructor;

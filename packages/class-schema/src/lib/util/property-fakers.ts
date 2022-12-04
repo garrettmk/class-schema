@@ -1,21 +1,21 @@
 import { faker } from '@faker-js/faker';
-import { Enum, PropertyMetadata } from '../class-schema-types';
-import { fakerMaker } from './faker-maker';
-import { TypeFn } from './types';
+import { flip, MaybeArray } from '@garrettmk/ts-utils';
 import { random } from 'radash';
-import { generateNumber } from './generate-number';
-import { flip } from '@garrettmk/ts-utils';
-import { Id, IdConstructor } from '../custom-types/id';
-import { getTypeInfo } from './get-type-info';
 import { FloatConstructor } from '../custom-types/float';
+import { Id, IdConstructor } from '../custom-types/id';
 import { IntConstructor } from '../custom-types/int';
+import { PropertyMetadata } from '../property-metadata/property-metadata-types';
+import { fakerMaker } from './faker-maker';
+import { generateNumber } from './generate-number';
+import { getTypeInfo } from './get-type-info';
+import { Enum, TypeFn } from './types';
 
 
-export function booleanFieldFaker(metadata: PropertyMetadata<BooleanConstructor | BooleanConstructor[]>) {
+export function booleanFieldFaker(metadata: PropertyMetadata<MaybeArray<BooleanConstructor>>) {
   return fakerMaker(metadata, faker.datatype.boolean);
 }
 
-export function stringFieldFaker(metadata: PropertyMetadata<StringConstructor | StringConstructor[]>) {
+export function stringFieldFaker(metadata: PropertyMetadata<MaybeArray<StringConstructor>>) {
   const { maxLength, minLength = 0, in: _in } = metadata;
   let fakerFn: TypeFn<string>;
 
@@ -30,7 +30,7 @@ export function stringFieldFaker(metadata: PropertyMetadata<StringConstructor | 
   return fakerMaker(metadata, fakerFn);
 }
 
-export function dateFieldFaker(metadata: PropertyMetadata<DateConstructor | DateConstructor[]>) {
+export function dateFieldFaker(metadata: PropertyMetadata<MaybeArray<DateConstructor>>) {
   const { min, max } = metadata;
   let fakerFn: TypeFn<Date>;
 
@@ -50,7 +50,7 @@ export function dateFieldFaker(metadata: PropertyMetadata<DateConstructor | Date
 }
 
 
-export function floatFieldFaker(metadata: PropertyMetadata<FloatConstructor | FloatConstructor[]>) {
+export function floatFieldFaker(metadata: PropertyMetadata<MaybeArray<FloatConstructor>>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
   let fakerFn: TypeFn<number>;
 
@@ -67,7 +67,7 @@ export function floatFieldFaker(metadata: PropertyMetadata<FloatConstructor | Fl
 }
 
 
-export function intFieldFaker(metadata: PropertyMetadata<IntConstructor | IntConstructor[]>) {
+export function intFieldFaker(metadata: PropertyMetadata<MaybeArray<IntConstructor>>) {
   const { min, max, eq, ne, in: _in, nin } = metadata;
   let fakerFn: TypeFn<number>;
 
@@ -84,17 +84,18 @@ export function intFieldFaker(metadata: PropertyMetadata<IntConstructor | IntCon
 }
 
 
-export function numberFieldFaker(metadata: PropertyMetadata<NumberConstructor | NumberConstructor[]>) {
+export function numberFieldFaker(metadata: PropertyMetadata<MaybeArray<NumberConstructor>>) {
   // @ts-expect-error too lazy to cast
   return () => flip(intFieldFaker(metadata), floatFieldFaker(metadata))();
 }
 
-export function idFieldFaker(metadata: PropertyMetadata<IdConstructor | IdConstructor[]>) {
+export function idFieldFaker(metadata: PropertyMetadata<MaybeArray<IdConstructor>>) {
   return fakerMaker(metadata, () => Id.fake())
 }
 
-export function enumFieldFaker(metadata: PropertyMetadata<Enum | Enum[], string | number>) {
-  const { innerType } = getTypeInfo(metadata.type as TypeFn<Enum>);
+export function enumFieldFaker(metadata: PropertyMetadata<MaybeArray<Enum>>) {
+  // @ts-expect-error idk
+  const { innerType } = getTypeInfo(metadata.type);
   const values = Object.values(innerType);
   const fakerFn = () => faker.helpers.arrayElement(values);
 
