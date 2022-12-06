@@ -1,13 +1,10 @@
-import { PropertyMetadata } from "./property-metadata-types";
-import { MaybeArray, ensureArray } from "@garrettmk/ts-utils";
-import { MetadataAction, applyActionsToProperties } from "@garrettmk/metadata-actions";
-import { MetadataKey } from "@garrettmk/metadata-manager";
-import { ClassMetadata, ClassContext } from "../class-metadata/class-metadata-manager";
+import { applyActionsToProperties, MetadataAction, PropertyContext } from "@garrettmk/metadata-actions";
+import { ensureArray, MaybeArray } from "@garrettmk/ts-utils";
+import { ClassContext, ClassMetadata } from "../class-metadata/class-metadata-manager";
 import { PropertiesMetadataManager } from "../properties-metadata/properties-metadata-manager";
+import { PropertyMetadata } from "./property-metadata-types";
 
-export interface ClassPropertyContext extends ClassContext {
-    propertyKey: MetadataKey
-  }
+export type ClassPropertyContext = ClassContext & PropertyContext;
 
 export type PropertyMetadataAction = MetadataAction<PropertyMetadata, ClassPropertyContext>;
   

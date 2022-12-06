@@ -1,5 +1,5 @@
 import { MaybeArray } from "@garrettmk/ts-utils";
-import { MetadataValues } from "dist/packages/metadata-manager";
+import { MetadataValues } from "@garrettmk/metadata-manager";
 import { apply, applyToProperties } from "./actions";
 import { MetadataAction, PropertyContext } from "./types";
 

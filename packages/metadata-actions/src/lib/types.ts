@@ -1,4 +1,4 @@
-import { MetadataKey } from 'dist/packages/metadata-manager';
+import { MetadataKey } from '@garrettmk/metadata-manager';
 
 /**
  * Returns a truthy or falsy value for a given metadata/context. Should

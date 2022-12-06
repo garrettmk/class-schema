@@ -1,12 +1,12 @@
-import { TypeFn } from './types';
+import { InnerType, TypeFn } from './types';
 
 export type TypeFnInfo<T> = {
-  type: T | T[]
-  innerType: T
+  type: T
+  innerType: InnerType<T>
   isArray: boolean
 }
 
-export function getTypeInfo<T>(typeFn: TypeFn<T | T[]>): TypeFnInfo<T> {
+export function getTypeInfo<T>(typeFn: TypeFn<T>): TypeFnInfo<T> {
   const type = typeFn();
   const innerType = Array.isArray(type) ? type[0] : type;
   const isArray = innerType !== type;

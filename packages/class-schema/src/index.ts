@@ -9,6 +9,9 @@ export * from './lib/util/flags';
 export * from './lib/util/get-type-info';
 export * from './lib/util/inner-type';
 
+export * from './lib/action-sets/validation-actions';
+export * from './lib/action-sets/base-object-actions';
+
 export * from './lib/class-metadata/class-metadata-manager';
 export * from './lib/class-metadata/class-metadata-actions';
 export * from './lib/class-metadata/class-decorator';

@@ -2,6 +2,7 @@ import { EnumObject as Enum, Values } from "@garrettmk/ts-utils"
 import { Id, IdConstructor } from "../custom-types/id"
 import { IntConstructor } from "../custom-types/int"
 import { FloatConstructor } from "../custom-types/float"
+import { InnerType } from "./types"
 
 
 export interface ArrayConstraints {
@@ -62,8 +63,8 @@ export type Constraints<T> =
   T extends BooleanConstructor[]    ? BooleanConstraints & ArrayConstraints :
   T extends DateConstructor         ? DateConstraints :
   T extends DateConstructor[]       ? DateConstraints & ArrayConstraints :
-  T extends Enum                    ? EnumConstraints<Enum> :
-  T extends Enum[]                  ? EnumConstraints<Enum> & ArrayConstraints :
+  T extends Enum                    ? EnumConstraints<T> :
+  T extends Enum[]                  ? EnumConstraints<InnerType<T>> & ArrayConstraints :
   T extends IdConstructor           ? IdConstraints :
   T extends IdConstructor[]         ? IdConstraints & ArrayConstraints :
   T extends IntConstructor          ? NumberConstraints :

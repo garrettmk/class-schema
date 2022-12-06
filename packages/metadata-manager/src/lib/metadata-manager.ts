@@ -1,4 +1,4 @@
-import { Constructor, getPrototypeChain } from '@garrettmk/ts-utils';
+import { Constructor } from '@garrettmk/ts-utils';
 
 /**
  * A metadata manager class.
@@ -8,6 +8,7 @@ export interface MetadataManager<Metadata, Target = unknown> {
   hasMetadata: (target: Target) => boolean;
   getMetadata: (target: Target) => Metadata;
   setMetadata: (target: Target, meta: Metadata) => void;
+  removeMetadata: (target: Target) => void;
   updateMetadata: (target: Target, callback: (metadata?: Metadata) => Metadata) => void;
   entries: () => [Target, Metadata][];
 }
@@ -33,7 +34,7 @@ export interface MetadataManager<Metadata, Target = unknown> {
  * }
  * ```
  */
-export function MetadataManagerClass<Metadata extends object, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
+export function MetadataManagerClass<Metadata, Target>(metadatas?: [Target, Metadata][]): Constructor & MetadataManager<Metadata, Target> {
   return class {
     /**
      * Maps a `Target` to a `Metadata`
@@ -67,6 +68,15 @@ export function MetadataManagerClass<Metadata extends object, Target>(metadatas?
      */
     public static setMetadata(target: Target, meta: Metadata): void {
       this.metadatas.set(target, meta);
+    }
+
+    /**
+     * Remove metadata for `target`.
+     * 
+     * @param target 
+     */
+    public static removeMetadata(target: Target): void {
+      this.metadatas.delete(target);
     }
 
     /**

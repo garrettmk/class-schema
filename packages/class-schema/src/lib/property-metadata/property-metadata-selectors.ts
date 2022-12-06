@@ -30,7 +30,7 @@ export function isConstructorField(
   );
 }
 
-export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMetadata<Enum> {
+export function isEnumField(metadata: PropertyMetadata): metadata is PropertyMetadata<Enum | Enum[]> {
   const { innerType } = getTypeInfo(metadata.type);
   return typeof innerType === 'object';
 }
@@ -43,7 +43,8 @@ export function isBuiltInField<Context>(metadata: PropertyMetadata, context: Con
 }
 
 export function isPrimaryKeyField<Context>(metadata: PropertyMetadata, context: Context): metadata is PropertyMetadata<Id> {
-  return 'primaryKey' in metadata && !!metadata['primaryKey'];
+  // @ts-ignore
+  return 'primaryKey' in metadata && !!metadata.primaryKey;
 }
 
 
