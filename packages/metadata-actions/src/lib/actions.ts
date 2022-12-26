@@ -1,6 +1,5 @@
 import { mapMetadataProperties, MetadataKey, MetadataValues } from '@garrettmk/metadata-manager';
 import { ensureArray, MaybeArray } from '@garrettmk/ts-utils';
-import { applyActions } from './apply-actions';
 import type { MetadataAction, MetadataTransform } from './types';
 import { MetadataSelector, MetadataTypeGuard, PropertyContext } from './types';
 
@@ -156,7 +155,7 @@ export function updateMetadata<Metadata, Context = unknown>(
 export function transformMetadata<Metadata, NewType, Context = unknown>(transform: MetadataTransform<Metadata, Context, NewType>, thenActions: MaybeArray<MetadataAction<NewType, Context>>): MetadataAction<Metadata, Context> {
     return function (metadata, context) {
         const newMetadata = transform(metadata, context);
-        applyActions(newMetadata, context, thenActions);
+        apply(thenActions)(newMetadata, context);
     }
 }
 
@@ -166,6 +165,6 @@ export function transformMetadata<Metadata, NewType, Context = unknown>(transfor
 export function transformContext<Metadata, Context, NewType>(transform: MetadataTransform<Metadata, Context, NewType>, thenActions: MaybeArray<MetadataAction<Metadata, NewType>>): MetadataAction<Metadata, Context> {
     return function (metadata, context) {
         const newContext = transform(metadata, context);
-        applyActions(metadata, newContext, thenActions);
+        apply(thenActions)(metadata, newContext);
     }
 }

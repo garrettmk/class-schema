@@ -1,20 +1,7 @@
-import { MetadataAction, TargetContext } from '@garrettmk/metadata-actions';
 import { InheritedMetadataManagerClass } from '@garrettmk/metadata-manager';
 import { Constructor, merge } from '@garrettmk/ts-utils';
 import { omit, shake } from 'radash';
-
-export interface ClassMetadata {
-    description?: string;
-    input?: boolean;
-    output?: boolean;
-    entity?: boolean;
-    abstract?: boolean;
-    hidden?: boolean;
-}
-
-export type ClassContext = TargetContext<Constructor>;
-
-export type ClassMetadataAction = MetadataAction<ClassMetadata, ClassContext>;
+import { ClassMetadata } from '../types';
 
 export class ClassMetadataManager extends InheritedMetadataManagerClass<
     ClassMetadata,

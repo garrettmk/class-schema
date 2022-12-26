@@ -37,16 +37,15 @@ export function InheritedMetadataManagerClass<Metadata extends object, Target>(m
         public static getMetadata(target: Target): Metadata {
             const targets = [target, ...getPrototypeChain(target)];
 
-            const resolvedMeta: Metadata = targets
+            const metadataChain: Metadata[] = targets
                 .reverse()
                 .filter(t => super.hasMetadata(t))
-                .map(t => super.getMetadata(t))
-                .reduce((m1, m2) => this.merge(m1, m2));
+                .map(t => super.getMetadata(t));
 
-            if (!resolvedMeta)
+            if (!metadataChain.length)
                 throw new Error(`No metadata for target: ${target}`);
 
-            return resolvedMeta;
+            return metadataChain.reduce((m1, m2) => this.merge(m1, m2));
         }
 
         /**

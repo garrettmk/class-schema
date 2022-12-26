@@ -4,7 +4,7 @@ import { random } from 'radash';
 import { FloatConstructor } from '../custom-types/float';
 import { Id, IdConstructor } from '../custom-types/id';
 import { IntConstructor } from '../custom-types/int';
-import { PropertyMetadata } from '../property-metadata/property-metadata-types';
+import { PropertyMetadata } from '../types';
 import { fakerMaker } from './faker-maker';
 import { generateNumber } from './generate-number';
 import { getTypeInfo } from './get-type-info';

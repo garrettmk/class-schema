@@ -22,7 +22,7 @@
         "outputPath": "dist/packages/metadata-actions",
         "main": "packages/metadata-actions/src/index.ts",
         "tsConfig": "packages/metadata-actions/tsconfig.lib.json",
-        "format": ["cjs"]
+        "format": ["esm", "cjs"]
       }
     },
     "lint": {

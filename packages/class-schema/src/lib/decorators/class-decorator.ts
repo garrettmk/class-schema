@@ -1,7 +1,6 @@
 import { Constructor } from "@garrettmk/ts-utils";
-import { BaseObjectActions } from "../action-sets/base-object-actions";
-import { ValidationActions } from "../action-sets/validation-actions";
-import { ClassMetadata, ClassMetadataManager } from "./class-metadata-manager";
+import { ClassMetadataManager } from "../managers/class-metadata-manager";
+import { ClassMetadata } from "../types";
 
 /**
  * Registers a class with ClassMetadataManager.
@@ -14,7 +13,5 @@ export function Class(meta: ClassMetadata = {}): ClassDecorator {
         const target = _target as unknown as Constructor;
 
         ClassMetadataManager.setMetadata(target, meta);
-        ValidationActions.addTarget(target);
-        BaseObjectActions.addTarget(target);
     }
 }

@@ -2,8 +2,8 @@ import { applyActions, MetadataAction } from '@garrettmk/metadata-actions';
 import { MetadataDict, MetadataKey } from '@garrettmk/metadata-manager';
 import { MaybeArray } from '@garrettmk/ts-utils';
 import { mapValues, omit, pick } from 'radash';
-import { ClassContext } from '../class-metadata/class-metadata-manager';
-import { PropertiesMetadata, PropertiesMetadataManager } from './properties-metadata-manager';
+import { PropertiesMetadataManager } from '../managers/properties-metadata-manager';
+import { ClassContext, PropertiesMetadata } from '../types';
 
 
 export function makePropertiesOptional(...keys: MetadataKey[]): MetadataAction<PropertiesMetadata> {

@@ -1,114 +1,115 @@
-import { applyToProperties, ifMetadata, isUnset, MetadataActionSet, updateMetadata } from '@garrettmk/metadata-actions';
+import { ifMetadata, isUnset, MetadataActionSet, updateMetadata } from '@garrettmk/metadata-actions';
 import { Constructor } from '@garrettmk/ts-utils';
-import { ClassMetadata, ClassMetadataManager } from '../class-metadata/class-metadata-manager';
+import { applyActionsToPropertyMetadata } from '../actions/property-metadata-actions';
 import { Float } from '../custom-types/float';
 import { Id } from '../custom-types/id';
 import { Int } from '../custom-types/int';
-import { withPropertiesMetadata } from '../properties-metadata/properties-metadata-actions';
-import { innerTypeExtends, innerTypeMatches, isEnumField } from '../property-metadata/property-metadata-selectors';
+import { ClassMetadataManager } from '../managers/class-metadata-manager';
+import { innerTypeExtends, innerTypeMatches, isEnumField } from '../selectors/property-metadata-selectors';
+import { ClassMetadata } from '../types';
 import { booleanFieldFaker, dateFieldFaker, enumFieldFaker, floatFieldFaker, idFieldFaker, intFieldFaker, numberFieldFaker, stringFieldFaker } from '../util/property-fakers';
 
+/**
+ * Actions for classes descending from BaseObject.
+ */
 export const BaseObjectActions = new MetadataActionSet<ClassMetadata, Constructor>(ClassMetadataManager, [
-  withPropertiesMetadata([
-    applyToProperties([
+  applyActionsToPropertyMetadata([
+    //
+    // Booleans
+    //
 
-      //
-      // Booleans
-      //
-
-      ifMetadata(innerTypeMatches(Boolean), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata((meta) => ({
-            faker: booleanFieldFaker(meta),
-          })),
-        ]),
+    ifMetadata(innerTypeMatches(Boolean), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata((meta) => ({
+          faker: booleanFieldFaker(meta),
+        })),
       ]),
+    ]),
 
-      //
-      // Strings
-      //
+    //
+    // Strings
+    //
 
-      ifMetadata(innerTypeMatches(String), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata((meta) => ({
-            faker: stringFieldFaker(meta),
-          })),
-        ]),
+    ifMetadata(innerTypeMatches(String), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata((meta) => ({
+          faker: stringFieldFaker(meta),
+        })),
       ]),
+    ]),
 
-      //
-      // Numbers
-      //
+    //
+    // Numbers
+    //
 
-      ifMetadata(innerTypeExtends(Number), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: numberFieldFaker(meta)
-          }))
-        ])
-      ]),
-
-
-      //
-      // Ints
-      //
-
-      ifMetadata(innerTypeMatches(Int), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: intFieldFaker(meta)
-          }))
-        ])
-      ]),
+    ifMetadata(innerTypeExtends(Number), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: numberFieldFaker(meta)
+        }))
+      ])
+    ]),
 
 
-      //
-      // Floats
-      //
+    //
+    // Ints
+    //
 
-      ifMetadata(innerTypeMatches(Float), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: floatFieldFaker(meta)
-          }))
-        ])
-      ]),
+    ifMetadata(innerTypeMatches(Int), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: intFieldFaker(meta)
+        }))
+      ])
+    ]),
 
-      //
-      // Dates
-      //
 
-      ifMetadata(innerTypeMatches(Date), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: dateFieldFaker(meta)
-          }))
-        ])
-      ]),
+    //
+    // Floats
+    //
 
-      //
-      // Enums
-      //
+    ifMetadata(innerTypeMatches(Float), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: floatFieldFaker(meta)
+        }))
+      ])
+    ]),
 
-      ifMetadata(isEnumField, [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: enumFieldFaker(meta)
-          }))
-        ])
-      ]),
+    //
+    // Dates
+    //
 
-      //
-      // Id
-      //
+    ifMetadata(innerTypeMatches(Date), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: dateFieldFaker(meta)
+        }))
+      ])
+    ]),
 
-      ifMetadata(innerTypeMatches(Id), [
-        ifMetadata(isUnset('faker'), [
-          updateMetadata(meta => ({
-            faker: idFieldFaker(meta)
-          }))
-        ])
+    //
+    // Enums
+    //
+
+    ifMetadata(isEnumField, [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: enumFieldFaker(meta)
+        }))
+      ])
+    ]),
+
+    //
+    // Id
+    //
+
+    ifMetadata(innerTypeMatches(Id), [
+      ifMetadata(isUnset('faker'), [
+        updateMetadata(meta => ({
+          faker: idFieldFaker(meta)
+        }))
       ])
     ])
-  ])  
+  ])
 ]);

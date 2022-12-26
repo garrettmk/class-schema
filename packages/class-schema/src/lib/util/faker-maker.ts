@@ -1,4 +1,4 @@
-import { PropertyMetadata } from '../property-metadata/property-metadata-types';
+import { PropertyMetadata } from '../types';
 import { getTypeInfo } from './get-type-info';
 import { TypeFn, InnerType } from './types';
 import { AnyFunction, listOf, flip } from '@garrettmk/ts-utils';

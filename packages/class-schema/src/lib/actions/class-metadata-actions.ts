@@ -1,6 +1,6 @@
 import { MetadataAction } from '@garrettmk/metadata-actions';
 import { ensureArray, MaybeArray } from '@garrettmk/ts-utils';
-import { ClassContext } from './class-metadata-manager';
+import { ClassContext } from '../types';
 
 
 export type DecorateClassWithFn<Metadata, Context extends ClassContext> = (

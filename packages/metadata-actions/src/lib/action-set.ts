@@ -10,30 +10,21 @@ export class MetadataActionSet<
     Target,
     Actions extends MaybeArray<MetadataAction<Metadata, TargetContext<Target>>> = MaybeArray<MetadataAction<Metadata, TargetContext<Target>>>
 > {
-    protected readonly targets = new Set<Target>();
-
     public constructor(
         protected readonly metadata: MetadataManager<Metadata, Target>,
         protected readonly actions: Actions,
     ) {}
 
-    public addTarget(target: Target) {
-        this.targets.add(target);
-    }
+    public applyActions(...targets: Target[]) {
+        if (!targets.length)
+            targets.push(...this.metadata.entries().map(([target]) => target));
 
-    public removeTarget(target: Target) {
-        this.targets.delete(target);
-    }
-
-    public applyActions() {
-        for (const target of this.targets) {
+        for (const target of targets) {
             const metadata = this.metadata.getMetadata(target);
             const context = { target };
 
             const newMetadata = applyActions(metadata, context, this.actions);
             this.metadata.setMetadata(target, newMetadata);
-
-            this.removeTarget(target);
         }
     }
 }

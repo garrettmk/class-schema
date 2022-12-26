@@ -1,6 +1,6 @@
 import { Constructor } from "@garrettmk/ts-utils";
-import { PropertiesMetadataManager } from "../properties-metadata/properties-metadata-manager";
-import { PropertyMetadata } from "../property-metadata/property-metadata-types";
+import { PropertiesMetadataManager } from "../managers/properties-metadata-manager";
+import { PropertyMetadata } from "../types";
 import { TypeFn } from "../util/types";
 
 /**

@@ -10,10 +10,11 @@
       "options": {
       "project": "packages/class-schema/package.json",
         "outputPath": "dist/packages/class-schema",
+        "outputFileName": "index.mjs",
         "main": "packages/class-schema/src/index.ts",
         "tsConfig": "packages/class-schema/tsconfig.lib.json",
         "external": ["@garrettmk/metadata-manager", "@garrettmk/metadata-actions"],
-        "format": ["cjs"]
+        "format": ["esm", "cjs"]
       }
     },
     "lint": {

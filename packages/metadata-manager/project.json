@@ -22,7 +22,7 @@
         "outputPath": "dist/packages/metadata-manager",
         "main": "packages/metadata-manager/src/index.ts",
         "tsConfig": "packages/metadata-manager/tsconfig.lib.json",
-        "format": ["cjs"]
+        "format": ["esm", "cjs"]
       }
     },
     "document": {
